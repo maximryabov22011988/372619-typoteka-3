@@ -12,7 +12,7 @@ const {
 const FILE_NAME = `mock.json`;
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
-const MAX_COUNT_ERROR_MESSAGE = `Не больше 1000 публикаций`;
+const MAX_COUNT_ERROR_MESSAGE = `Не больше ${MAX_COUNT} публикаций`;
 
 const TITLES = [
   `Ёлки. История деревьев`,
