@@ -6,7 +6,8 @@ const {
 } = require(`../../constants`);
 const {
   getRandomInt,
-  shuffle
+  getRandomArrElement,
+  getRandomArrElements,
 } = require(`../../utils`);
 
 const FILE_NAME = `mock.json`;
@@ -92,12 +93,12 @@ const createDate = () => {
 };
 
 const generatePublications = (count) => (
-  Array(count).fill({}).map(() => ({
-    title: TITLES[getRandomInt(0, TITLES.length - 1)],
-    announce: shuffle(DESCRIPTIONS).slice(0, 5).join(` `),
-    fullText: shuffle(DESCRIPTIONS).slice(0, getRandomInt(2, DESCRIPTIONS.length - 1)).join(` `),
+  Array.from({length: count}, () => ({
+    title: getRandomArrElement(TITLES),
+    announce: getRandomArrElements(DESCRIPTIONS, 5).join(` `),
+    fullText: getRandomArrElements(DESCRIPTIONS).join(` `),
     createdDate: formatDate(createDate()),
-    category: shuffle(CATEGORIES).slice(0, getRandomInt(1, CATEGORIES.length - 1)),
+    category: getRandomArrElements(CATEGORIES),
   }))
 );
 
