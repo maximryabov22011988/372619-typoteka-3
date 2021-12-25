@@ -1,7 +1,9 @@
 'use strict';
 
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
+const chalk = require(`chalk`);
 const {
+  MOCK_FILENAME,
   ExitCode
 } = require(`../../constants`);
 const {
@@ -10,7 +12,6 @@ const {
   getRandomArrElements,
 } = require(`../../utils`);
 
-const FILE_NAME = `mock.json`;
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
 const MAX_COUNT_ERROR_MESSAGE = `Не больше ${MAX_COUNT} публикаций`;
@@ -102,20 +103,24 @@ const generatePublications = (count) => (
   }))
 );
 
-const errorHandler = (err) => err ? console.error(`Can't write data to file...`) : console.info(`Operation success. File created.`);
-
 module.exports = {
   name: `--generate`,
-  run(args) {
+  async run(args) {
     const [count] = args;
     const publicationsCount = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
     if (publicationsCount > MAX_COUNT) {
-      console.error(MAX_COUNT_ERROR_MESSAGE);
+      console.error(chalk.red(MAX_COUNT_ERROR_MESSAGE));
       process.exit(ExitCode.ERROR);
     }
 
     const content = JSON.stringify(generatePublications(publicationsCount), null, 2);
-    fs.writeFile(FILE_NAME, content, errorHandler);
+
+    try {
+      await fs.writeFile(MOCK_FILENAME, content);
+      console.info(chalk.green(`Operation success. File created.`));
+    } catch (e) {
+      console.error(chalk.red(`Can't write data to file...`));
+    }
   }
 };
