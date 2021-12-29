@@ -10,6 +10,4 @@ const Cli = [help, version, generate, server].reduce((result, module) => {
   return result;
 }, {});
 
-module.exports = {
-  Cli
-};
+module.exports = Cli;
