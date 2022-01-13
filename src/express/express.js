@@ -14,6 +14,6 @@ app.use(`/my`, myRoutes);
 app.use(`/articles`, articlesRoutes);
 app.use(`/`, mainRoutes);
 app.use((req, res) => res.status(HttpCode.BAD_REQUEST).send(`Not found`));
-app.use((err, req, res) => res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Internal server error`));
+app.use((err, req, res, _next) => res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Internal server error`));
 
 app.listen(DEFAULT_PORT);
