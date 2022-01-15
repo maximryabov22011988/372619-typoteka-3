@@ -1,19 +1,25 @@
 'use strict';
 
 const express = require(`express`);
+const path = require(`path`);
 const {HttpCode} = require(`../constants`);
 const mainRoutes = require(`./routes/main`);
 const myRoutes = require(`./routes/my`);
 const articlesRoutes = require(`./routes/articles`);
 
 const DEFAULT_PORT = 8080;
+const PUBLIC_DIR = `public`;
 
 const app = express();
 
 app.use(`/my`, myRoutes);
 app.use(`/articles`, articlesRoutes);
 app.use(`/`, mainRoutes);
-app.use((req, res) => res.status(HttpCode.BAD_REQUEST).send(`Not found`));
-app.use((err, req, res, _next) => res.status(HttpCode.INTERNAL_SERVER_ERROR).send(`Internal server error`));
+app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
+app.use((req, res) => res.status(HttpCode.BAD_REQUEST).render(`errors/404`));
+app.use((err, req, res, _next) => res.status(HttpCode.INTERNAL_SERVER_ERROR).render(`errors/500`));
+
+app.set(`views`, path.resolve(__dirname, `templates`));
+app.set(`view engine`, `pug`);
 
 app.listen(DEFAULT_PORT);
