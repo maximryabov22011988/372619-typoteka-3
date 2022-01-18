@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require(`express`);
+const chalk = require(`chalk`);
 const path = require(`path`);
 const {HttpCode} = require(`../constants`);
 const mainRoutes = require(`./routes/main`);
@@ -22,4 +23,10 @@ app.use((err, req, res, _next) => res.status(HttpCode.INTERNAL_SERVER_ERROR).ren
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
 
-app.listen(DEFAULT_PORT);
+app.listen(DEFAULT_PORT)
+  .on(`listening`, () => {
+    console.info(chalk.green(`Waiting for connections on port ${DEFAULT_PORT}`));
+  })
+  .on(`error`, (err) => {
+    console.error(chalk.red(`Server creation error: ${err.message}`));
+  });
