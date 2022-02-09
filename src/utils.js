@@ -1,5 +1,10 @@
 'use strict';
 
+const {nanoid} = require(`nanoid`);
+
+const DEFAULT_ID_SIZE = 6;
+const generateId = (size = DEFAULT_ID_SIZE) => nanoid(size);
+
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -20,6 +25,7 @@ const getRandomArrElement = (arr) => arr[getRandomInt(0, arr.length - 1)];
 const getRandomArrElements = (arr, end = getRandomInt(1, arr.length - 1)) => shuffle(arr).slice(0, end);
 
 module.exports = {
+  generateId,
   getRandomInt,
   getRandomArrElement,
   getRandomArrElements,

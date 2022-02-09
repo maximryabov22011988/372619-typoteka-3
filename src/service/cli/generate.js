@@ -7,6 +7,7 @@ const {
   ExitCode
 } = require(`../../constants`);
 const {
+  generateId,
   getRandomInt,
   getRandomArrElement,
   getRandomArrElements,
@@ -19,6 +20,7 @@ const MAX_COUNT_ERROR_MESSAGE = `Не больше ${MAX_COUNT} публикац
 const TITLES_FILE_PATH = `./data/titles.txt`;
 const SENTENCES_FILE_PATH = `./data/sentences.txt`;
 const CATEGORIES_FILE_PATH = `./data/categories.txt`;
+const COMMENTS_FILE_PATH = `./data/comments.txt`;
 
 const formatDate = (date) => {
   if (date instanceof Date) {
@@ -46,13 +48,24 @@ const createDate = () => {
   return new Date(randomDateInMs);
 };
 
-const generatePublications = ({count, titles, sentences, categories}) => (
+const getComments = (comments) => {
+  const textList = getRandomArrElements(comments);
+  return textList.map((text) => ({
+    id: generateId(),
+    text
+  }));
+};
+
+
+const generatePublications = ({count, titles, sentences, categories, comments}) => (
   Array.from({length: count}, () => ({
+    id: generateId(),
     title: getRandomArrElement(titles),
     announce: getRandomArrElements(sentences, 5).join(` `),
     fullText: getRandomArrElements(sentences).join(` `),
     createdDate: formatDate(createDate()),
     category: getRandomArrElements(categories),
+    comments: getComments(comments)
   }))
 );
 
@@ -80,11 +93,13 @@ module.exports = {
     const titles = await readContent(TITLES_FILE_PATH);
     const sentences = await readContent(SENTENCES_FILE_PATH);
     const categories = await readContent(CATEGORIES_FILE_PATH);
+    const comments = await readContent(COMMENTS_FILE_PATH);
     const publications = generatePublications({
       count: publicationsCount,
       titles,
       sentences,
-      categories
+      categories,
+      comments
     });
     const content = JSON.stringify(publications, null, 2);
 
