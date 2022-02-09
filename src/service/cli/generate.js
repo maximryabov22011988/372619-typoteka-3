@@ -15,6 +15,7 @@ const {
 
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
+const MAX_COMMENTS = 4;
 const MAX_COUNT_ERROR_MESSAGE = `Не больше ${MAX_COUNT} публикаций`;
 
 const TITLES_FILE_PATH = `./data/titles.txt`;
@@ -48,14 +49,11 @@ const createDate = () => {
   return new Date(randomDateInMs);
 };
 
-const getComments = (comments) => {
-  const textList = getRandomArrElements(comments);
-  return textList.map((text) => ({
+const getComments = (comments) =>
+  Array.from({length: getRandomInt(1, MAX_COMMENTS)}, () => ({
     id: generateId(),
-    text
+    text: getRandomArrElements(comments).join(` `)
   }));
-};
-
 
 const generatePublications = ({count, titles, sentences, categories, comments}) => (
   Array.from({length: count}, () => ({
