@@ -7,6 +7,8 @@ const USER_ARGV_INDEX = 2;
 
 const MOCK_FILENAME = `mocks.json`;
 
+const API_PREFIX = `/api`;
+
 const ExitCode = {
   SUCCESS: 0,
   ERROR: 1
@@ -26,6 +28,7 @@ module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   MOCK_FILENAME,
+  API_PREFIX,
   ExitCode,
   HttpCode
 };

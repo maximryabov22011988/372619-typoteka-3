@@ -1,0 +1,59 @@
+### Запрашивает список категорий
+GET http://localhost:3000/api/categories
+
+
+
+### Поиск публикаций
+GET http://localhost:3000/api/search?query=обзор
+
+### Запрашивает список публикаций
+GET http://localhost:3000/api/articles
+
+### Запрашивает публикацию с :id
+GET http://localhost:3000/api/articles/aY1vtd
+
+### Добавление публикации
+POST http://localhost:3000/api/articles
+Content-Type: application/json
+
+{
+  "title": "Новая публикация",
+  "announce": "Какой то анонс",
+  "createdDate": "2022-02-02 22:31:48",
+  "category": ["Жизнь"]
+}
+
+### Обновление публикации
+PUT http://localhost:3000/api/articles/aY1vtd
+Content-Type: application/json
+
+{
+  "title": "(обновленный) Что такое золотое сечение",
+  "announce": "Первая большая ёлка была установлена только в 1938 году. Достичь успеха помогут ежедневные повторения. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле?",
+  "fullText": "Вы можете достичь всего. Стоит только немного постараться и запастись книгами.",
+  "createdDate": "2022-02-09 17:31:48",
+  "category": [
+    "Жизнь",
+    "Кино",
+    "Деревья"
+  ]
+}
+
+### Удаление публикации с :id
+DELETE http://localhost:3000/api/articles/MRw8I6
+
+
+
+### Запрашивает комментарии для публикации с :id
+GET http://localhost:3000/api/articles/qmGOPE/comments
+
+### Добавление нового комментария
+POST http://localhost:3000/api/articles/qmGOPE/comments
+Content-Type: application/json
+
+{
+  "text": "Новый тестовый коммент"
+}
+
+### Удаление комментария
+DELETE http://localhost:3000/api/articles/qmGOPE/comments/F3AGRK

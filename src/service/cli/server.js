@@ -2,15 +2,19 @@
 
 const express = require(`express`);
 const chalk = require(`chalk`);
-const {HttpCode} = require(`../../constants`);
-const postsRouter = require(`../routes/posts`);
+const {
+  API_PREFIX,
+  HttpCode
+} = require(`../../constants`);
+const routes = require(`../api`);
 
 const DEFAULT_PORT = 3000;
 const notFoundMessageText = `Not found`;
 
 const app = express();
 app.use(express.json());
-app.use(`/posts`, postsRouter);
+
+app.use(API_PREFIX, routes);
 app.use((req, res) => res.status(HttpCode.BAD_REQUEST).send(notFoundMessageText));
 
 module.exports = {
