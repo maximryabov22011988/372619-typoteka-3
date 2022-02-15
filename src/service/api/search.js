@@ -14,7 +14,7 @@ const searchAPI = (app, service) => {
     }
 
     const searchResults = service.findAll(query);
-    const searchStatus = searchResults ? HttpCode.OK : HttpCode.NOT_FOUND;
+    const searchStatus = searchResults.length ? HttpCode.OK : HttpCode.NOT_FOUND;
     return res.status(searchStatus).json(searchResults);
   });
 };

@@ -22,7 +22,7 @@ const articleAPI = (app, articleService, commentService) => {
 
   route.post(`/`, articleValidator, (req, res) => {
     const newArticle = articleService.create(req.body);
-    res.status(HttpCode.OK).json(newArticle);
+    res.status(HttpCode.CREATED).json(newArticle);
   });
 
   route.put(`/:articleId`, [articleExists(articleService), articleValidator], (req, res) => {
@@ -50,7 +50,7 @@ const articleAPI = (app, articleService, commentService) => {
   route.post(`/:articleId/comments`, [articleExists(articleService), commentValidator], (req, res) => {
     const {article} = res.locals;
     const newComment = commentService.create(article, req.body);
-    res.status(HttpCode.OK).json(newComment);
+    res.status(HttpCode.CREATED).json(newComment);
   });
 
   route.delete(`/:articleId/comments/:commentId`, articleExists(articleService), (req, res) => {

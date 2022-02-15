@@ -1,21 +1,37 @@
 'use strict';
 
 const express = require(`express`);
-const chalk = require(`chalk`);
 const {
   API_PREFIX,
   HttpCode
 } = require(`../../constants`);
 const routes = require(`../api`);
+const {getLogger} = require(`../lib/logger`);
 
 const DEFAULT_PORT = 3000;
 const notFoundMessageText = `Not found`;
 
 const app = express();
 app.use(express.json());
+const logger = getLogger({name: `api`});
+
+app.use((req, res, next) => {
+  logger.debug(`Request on route ${req.url}`);
+  res.on(`finish`, () => {
+    logger.info(`Response status code ${res.statusCode}`);
+  });
+  next();
+});
 
 app.use(API_PREFIX, routes);
-app.use((req, res) => res.status(HttpCode.BAD_REQUEST).send(notFoundMessageText));
+
+app.use((req, res) => {
+  res.status(HttpCode.BAD_REQUEST).send(notFoundMessageText);
+  logger.error(`Route not found: ${req.url}`);
+});
+app.use((err, _req, _res, _next) => {
+  logger.error(`An error occurred on processing request: ${err.message}`);
+});
 
 module.exports = {
   name: `--server`,
@@ -25,10 +41,10 @@ module.exports = {
 
     app.listen(port)
       .on(`listening`, () => {
-        console.info(chalk.green(`Waiting for connections on port ${port}`));
+        logger.info(`Waiting for connections on port ${port}`);
       })
       .on(`error`, (err) => {
-        console.error(chalk.red(`Server creation error: ${err.message}`));
+        logger.error(`Server creation error: ${err.message}`);
       });
   }
 };
