@@ -29,8 +29,10 @@ app.use((req, res) => {
   res.status(HttpCode.BAD_REQUEST).send(notFoundMessageText);
   logger.error(`Route not found: ${req.url}`);
 });
-app.use((err, _req, _res, _next) => {
-  logger.error(`An error occurred on processing request: ${err.message}`);
+app.use((err, _req, res, _next) => {
+  const {message} = err;
+  res.status(HttpCode.INTERNAL_SERVER_ERROR).send(message);
+  logger.error(`An error occurred on processing request: ${message}`);
 });
 
 module.exports = {
