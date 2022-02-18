@@ -11,6 +11,8 @@ html(lang='ru')
     link(rel='preload' href='/fonts/SFProDisplay-Regular.woff2' as='font' crossorigin='anonymous')
     link(rel='stylesheet' href='/css/style.min.css')
   body
+    mixin date(dateValue)
+        | #{new Date(dateValue).toLocaleDateString(_, {hour: 'numeric', minute: 'numeric'})}
     .wrapper
       include partials/header.pug
       block content

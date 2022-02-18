@@ -22,6 +22,7 @@ const TITLES_FILE_PATH = `./data/titles.txt`;
 const SENTENCES_FILE_PATH = `./data/sentences.txt`;
 const CATEGORIES_FILE_PATH = `./data/categories.txt`;
 const COMMENTS_FILE_PATH = `./data/comments.txt`;
+const PICTURES_FILE_PATH = `./data/pictures.txt`;
 
 const formatDate = (date) => {
   if (date instanceof Date) {
@@ -49,22 +50,28 @@ const createDate = () => {
   return new Date(randomDateInMs);
 };
 
-const getComments = (comments) =>
+const getComments = (comments, articleTitle) =>
   Array.from({length: getRandomInt(1, MAX_COMMENTS)}, () => ({
     id: generateId(),
-    text: getRandomArrElements(comments).join(` `)
+    text: getRandomArrElements(comments).join(` `),
+    createdDate: formatDate(createDate()),
+    articleTitle
   }));
 
-const generatePublications = ({count, titles, sentences, categories, comments}) => (
-  Array.from({length: count}, () => ({
-    id: generateId(),
-    title: getRandomArrElement(titles),
-    announce: getRandomArrElements(sentences, 5).join(` `),
-    fullText: getRandomArrElements(sentences).join(` `),
-    createdDate: formatDate(createDate()),
-    category: getRandomArrElements(categories),
-    comments: getComments(comments)
-  }))
+const generatePublications = ({count, titles, pictures, sentences, categories, comments}) => (
+  Array.from({length: count}, () => {
+    const title = getRandomArrElement(titles);
+    return ({
+      id: generateId(),
+      title,
+      picture: getRandomArrElement(pictures),
+      announce: getRandomArrElements(sentences, 5).join(` `),
+      fullText: getRandomArrElements(sentences).join(` `),
+      createdDate: formatDate(createDate()),
+      category: getRandomArrElements(categories, 5),
+      comments: getComments(comments, title),
+    });
+  })
 );
 
 const readContent = async (filepath) => {
@@ -89,12 +96,14 @@ module.exports = {
     }
 
     const titles = await readContent(TITLES_FILE_PATH);
+    const pictures = await readContent(PICTURES_FILE_PATH);
     const sentences = await readContent(SENTENCES_FILE_PATH);
     const categories = await readContent(CATEGORIES_FILE_PATH);
     const comments = await readContent(COMMENTS_FILE_PATH);
     const publications = generatePublications({
       count: publicationsCount,
       titles,
+      pictures,
       sentences,
       categories,
       comments

@@ -1,0 +1,26 @@
+extends ../layout.pug
+
+block content
+  main
+    section.search-page
+      .search-page__wrapper(class=(results && results.length === 0 ? `search-page__wrapper--empty` : ``))
+        h1 Поиск
+        .search.search-page__form
+          form(action='/search' method='get')
+            label
+              input(type='text' name='query' placeholder='Что ищем?' value=(query || ''))
+            button.search__button.button.button--transparent(type='submit') Найти
+
+        if results.length === 0
+          p.search-page__empty Ничего не нашлось
+        else
+        each article in results
+          .search__result
+            time.search__date(datetime=article.createdDate)
+              +date(article.createdDate)
+            a.search__link(href=`/articles/${article.id}`)
+              each titlePart of article.title
+                if titlePart.type === 'bold'
+                  b #{titlePart.text}
+                else
+                  | #{titlePart.text}
