@@ -5,9 +5,22 @@ const api = require(`../api`).getAPI();
 
 const mainRouter = new Router();
 
+const IMAGE_FORMATS = [`.jpg`, `.jpeg`, `.png`, `.webp`];
+const getArticlesWithCorrectImageFormat = (articles, postfix = `@1x`, ext = `jpg`) => {
+  return articles.map((article) => {
+    const hasFormat = IMAGE_FORMATS.some((format) => article.picture.includes(format));
+    if (!hasFormat) {
+      article.picture = `${article.picture}${postfix}.${ext}`;
+    }
+
+    return article;
+  });
+};
+
 mainRouter.get(`/`, async (req, res) => {
   const articles = await api.getArticles();
-  res.render(`main/index`, {articles});
+  const mappedArticles = getArticlesWithCorrectImageFormat(articles);
+  res.render(`main/index`, {articles: mappedArticles});
 });
 
 mainRouter.get(`/login`, (req, res) => res.render(`main/login`));

@@ -99,7 +99,7 @@ block content
                 li.preview__breadcrumbs-item
                   a.preview__breadcrumbs-link(href='#') #{category}
             .preview__background
-              img.preview__background-image(src=`/img/${article.picture}@1x.jpg` width='460' height='240' srcset=`/img/${article.picture}@1x.jpg 1x, /img/${article.picture}@2x.jpg 2x` alt=article.title)
+              img.preview__background-image(src=`/img/${article.picture}` width='460' height='240' alt=article.title)
             time.preview__time(datetime=article.createdDate)
               +date(article.createdDate)
             h3.preview__name
