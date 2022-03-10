@@ -58,7 +58,7 @@ const getComments = (comments, articleTitle) =>
     articleTitle
   }));
 
-const generatePublications = ({count, titles, pictures, sentences, categories, comments}) => (
+const generateArticles = ({count, titles, pictures, sentences, categories, comments}) => (
   Array.from({length: count}, () => {
     const title = getRandomArrElement(titles);
     return ({
@@ -88,9 +88,9 @@ module.exports = {
   name: `--generate`,
   async run(args) {
     const [count] = args;
-    const publicationsCount = Number.parseInt(count, 10) || DEFAULT_COUNT;
+    const articlesCount = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
-    if (publicationsCount > MAX_COUNT) {
+    if (articlesCount > MAX_COUNT) {
       console.error(chalk.red(MAX_COUNT_ERROR_MESSAGE));
       process.exit(ExitCode.ERROR);
     }
@@ -100,15 +100,15 @@ module.exports = {
     const sentences = await readContent(SENTENCES_FILE_PATH);
     const categories = await readContent(CATEGORIES_FILE_PATH);
     const comments = await readContent(COMMENTS_FILE_PATH);
-    const publications = generatePublications({
-      count: publicationsCount,
+    const articles = generateArticles({
+      count: articlesCount,
       titles,
       pictures,
       sentences,
       categories,
       comments
     });
-    const content = JSON.stringify(publications, null, 2);
+    const content = JSON.stringify(articles, null, 2);
 
     try {
       await fs.writeFile(MOCK_FILENAME, content);
