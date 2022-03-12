@@ -2,6 +2,7 @@
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
+const {ExitCode} = require(`../../constants`);
 const {
   getRandomInt,
   getRandomArrElement,
@@ -190,6 +191,7 @@ ${disableAllTableTrigger(`articles_categories`, false)}`;
       console.info(chalk.green(`Operation success. File created.`));
     } catch (e) {
       console.error(chalk.red(`Can't write data to file...`));
+      process.exit(ExitCode.ERROR);
     }
   }
 };

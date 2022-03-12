@@ -115,6 +115,7 @@ module.exports = {
       console.info(chalk.green(`Operation success. File created.`));
     } catch (e) {
       console.error(chalk.red(`Can't write data to file...`));
+      process.exit(ExitCode.ERROR);
     }
   }
 };
