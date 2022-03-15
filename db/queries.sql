@@ -16,7 +16,7 @@ SELECT
   name,
   count(article_id) AS article_count
 FROM categories
-  JOIN articles_categories
+  LEFT JOIN articles_categories
     ON id = category_id
   GROUP BY id
   ORDER BY article_count DESC;
@@ -33,13 +33,13 @@ SELECT
   cardinality(array_agg(DISTINCT comments.id)) AS comments_count,
   STRING_AGG(DISTINCT categories.name, ', ') AS category_list
 FROM articles
-  JOIN articles_categories
+  LEFT JOIN articles_categories
     ON articles.id = articles_categories.article_id
-  JOIN categories
+  LEFT JOIN categories
     ON articles_categories.category_id = categories.id
   LEFT JOIN comments
     ON comments.article_id = articles.id
-  JOIN users
+  LEFT JOIN users
     ON users.id = articles.user_id
   GROUP BY articles.id, users.id
   ORDER BY articles.created_at DESC;
