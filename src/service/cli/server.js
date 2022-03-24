@@ -3,9 +3,11 @@
 const express = require(`express`);
 const {
   API_PREFIX,
-  HttpCode
+  HttpCode,
+  ExitCode
 } = require(`../../constants`);
 const routes = require(`../api`);
+const sequelize = require(`../lib/sequelize`);
 const {getLogger} = require(`../lib/logger`);
 
 const DEFAULT_PORT = 3000;
@@ -38,6 +40,15 @@ app.use((err, _req, res, _next) => {
 module.exports = {
   name: `--server`,
   async run(args) {
+    try {
+      logger.info(`Trying to connect database...`);
+      await sequelize.authenticate();
+    } catch (err) {
+      logger.error(`An error occurred: ${err.message}`);
+      process.exit(ExitCode.ERROR);
+    }
+    logger.info(`Connection to database established`);
+
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 

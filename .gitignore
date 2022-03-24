@@ -17,3 +17,6 @@ build/
 **/express/upload/img/*.*
 
 mocks.json
+
+# Файл с переменными окружения
+.env
