@@ -17,7 +17,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     min: 0,
     max: 10,
     acquire: 10000,
-    idle: 1000
+    idle: 10000
   }
 });
 
