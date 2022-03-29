@@ -7,6 +7,7 @@ const {
   getRandomInt,
   getRandomArrElement,
   getRandomArrElements,
+  getText
 } = require(`../../utils`);
 
 const DEFAULT_COUNT = 3;
@@ -55,18 +56,6 @@ const generateComments = ({count, userCount, comments, articleId}) =>
     userId: getRandomInt(1, userCount),
     text: getRandomArrElements(comments).join(` `)
   }));
-
-const getText = (values, maxLength) => {
-  return values.reduce((acc, value) => {
-    const concatValues = `${acc} ${value}`;
-    if (concatValues.length <= maxLength) {
-      return concatValues;
-    }
-
-    return acc;
-  }, ``);
-};
-
 
 const generateArticles = ({count, categoryCount, userCount, titles, pictures, sentences, comments}) => (
   Array.from({length: count}, (_, index) =>

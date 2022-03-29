@@ -16,8 +16,8 @@ block content
         else
         each article in results
           .search__result
-            time.search__date(datetime=article.createdDate)
-              +date(article.createdDate)
+            time.search__date(datetime=article.createdAt)
+              +date(article.createdAt)
             a.search__link(href=`/articles/${article.id}`)
               each titlePart of article.title
                 if titlePart.type === 'bold'

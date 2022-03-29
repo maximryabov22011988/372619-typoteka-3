@@ -26,10 +26,9 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
   const newArticle = {
     title: body.title,
     picture: file ? file.filename : ``,
-    category: body.category,
+    categories: body.categories,
     announce: body.announce,
     fulltext: body.fulltext,
-    createdDate: body.date,
   };
 
   try {
@@ -55,24 +54,11 @@ articlesRouter.get(`/edit/:id`, async (req, res) => {
 
 articlesRouter.get(`/:id`, async (req, res) => {
   const {id} = req.params;
-  const articles = await api.getArticles();
-
-  const article = articles.find((item) => item.id === id);
-  const categoriesWithCount = articles.reduce((result, item) => {
-    item.category.forEach((category) => {
-      if (article.category.includes(category)) {
-        if (result[category]) {
-          result[category] += 1;
-        } else {
-          result[category] = 1;
-        }
-      }
-    });
-
-    return result;
-  }, {});
-
-  res.render(`articles/post`, {article, categories: Object.entries(categoriesWithCount)});
+  const [article, categories] = await Promise.all([
+    api.getArticle(id, {withComments: true}),
+    api.getCategories({withCount: true})
+  ]);
+  res.render(`articles/post`, {article, categories});
 });
 
 module.exports = articlesRouter;

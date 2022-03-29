@@ -7,7 +7,9 @@ const {DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD} = process.env;
 const userArgs = process.argv.slice(USER_ARGV_INDEX);
 const [userCommand] = userArgs;
 
-if (userCommand.includes(`server`)) {
+const availableUserCommands = [`server`, `filldb`];
+
+if (availableUserCommands.some((command) => userCommand.includes(command))) {
   const hasAllRequiredDbEnvVariables = [DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD].some((variable) => variable !== undefined);
 
   if (!hasAllRequiredDbEnvVariables) {
@@ -28,4 +30,3 @@ if (userCommand.includes(`server`)) {
 
   module.exports = sequelize;
 }
-

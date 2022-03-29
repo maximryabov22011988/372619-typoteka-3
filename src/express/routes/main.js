@@ -8,7 +8,7 @@ const mainRouter = new Router();
 const IMAGE_FORMATS = [`.jpg`, `.jpeg`, `.png`, `.webp`];
 const getArticlesWithCorrectImageFormat = (articles, postfix = `@1x`, ext = `jpg`) => {
   return articles.map((article) => {
-    const hasFormat = IMAGE_FORMATS.some((format) => article.picture.includes(format));
+    const hasFormat = IMAGE_FORMATS.some((format) => article.picture && article.picture.includes(format));
     if (!hasFormat) {
       article.picture = `${article.picture}${postfix}.${ext}`;
     }
@@ -18,9 +18,12 @@ const getArticlesWithCorrectImageFormat = (articles, postfix = `@1x`, ext = `jpg
 };
 
 mainRouter.get(`/`, async (req, res) => {
-  const articles = await api.getArticles();
+  const [articles, categories] = await Promise.all([
+    api.getArticles(),
+    api.getCategories({withCount: true})
+  ]);
   const mappedArticles = getArticlesWithCorrectImageFormat(articles);
-  res.render(`main/index`, {articles: mappedArticles});
+  res.render(`main/index`, {articles: mappedArticles, categories});
 });
 
 mainRouter.get(`/login`, (req, res) => res.render(`main/login`));

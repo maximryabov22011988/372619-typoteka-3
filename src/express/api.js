@@ -16,12 +16,12 @@ class API {
   }
 
 
-  getArticles() {
-    return this._load(`/articles`);
+  getArticles({withComments} = {}) {
+    return this._load(`/articles`, {params: {withComments}});
   }
 
-  getArticle(id) {
-    return this._load(`/articles/${id}`);
+  getArticle(id, {withComments} = {}) {
+    return this._load(`/articles/${id}`, {params: {withComments}});
   }
 
   async getAllComments() {
@@ -29,8 +29,8 @@ class API {
     return articles.reduce((result, article) => result.concat(article.comments), []);
   }
 
-  getCategories() {
-    return this._load(`/categories`);
+  getCategories({withCount} = {}) {
+    return this._load(`/categories`, {params: {withCount}});
   }
 
   search(query) {

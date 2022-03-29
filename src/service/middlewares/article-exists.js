@@ -2,9 +2,9 @@
 
 const {HttpCode} = require(`../../constants`);
 
-const articleExists = (articleService) => (req, res, next) => {
+const articleExists = (articleService) => async (req, res, next) => {
   const {articleId} = req.params;
-  const article = articleService.find(articleId);
+  const article = await articleService.find(articleId);
 
   if (!article) {
     return res.status(HttpCode.NOT_FOUND).send(`Not found article with id "${articleId}"`);

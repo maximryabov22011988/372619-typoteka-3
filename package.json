@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env LOG_LEVEL=error node -r dotenv/config ./src/service/service.js",
     "start::debug": "cross-env LOG_LEVEL=info NODE_ENV=development node -r dotenv/config ./src/service/service.js",
-    "start-server": "nodemon ./src/service/service.js --server",
+    "start-server": "cross-env LOG_LEVEL=info NODE_ENV=development nodemon -r dotenv/config ./src/service/service.js --server",
     "start-front-server": "nodemon ./src/express/express.js",
     "generate-mocks": "node ./src/service/service.js --generate 5",
     "test": "npm run eslint && npm run jest",
@@ -29,6 +29,7 @@
     "jest": "27.5.1",
     "nodemon": "2.0.15",
     "pino-pretty": "7.5.1",
+    "sqlite3": "5.0.2",
     "supertest": "6.2.2"
   },
   "dependencies": {

@@ -2,7 +2,7 @@
 
 const {HttpCode} = require(`../../constants`);
 
-const REQUIRED_FIELDS = [`title`, `createdDate`, `category`, `announce`];
+const REQUIRED_FIELDS = [`title`, `announce`, `categories`, `fulltext`];
 
 const articleValidator = (req, res, next) => {
   const article = req.body;

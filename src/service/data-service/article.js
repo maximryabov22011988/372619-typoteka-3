@@ -1,45 +1,60 @@
 'use strict';
 
-const {generateId} = require(`../../utils`);
+const Aliase = require(`../models/aliase`);
 
 class ArticleService {
-  constructor(articles) {
-    this._articles = articles;
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
   }
 
-  create(articleData) {
-    const newArticle = Object.assign({
-      id: generateId(),
-      comments: []
-    }, articleData);
-
-    this._articles.push(newArticle);
-
-    return newArticle;
+  async create(articleData) {
+    const article = await this._Article.create(articleData);
+    await article.addCategories(articleData.categories);
+    return article.get();
   }
 
-  update(newArticleData) {
-    this._articles = this._articles.map((article) => article.id === newArticleData.id ? newArticleData : article);
+  async update(id, newArticleData) {
+    const {categories = [], ...articleData} = newArticleData;
 
-    return newArticleData;
-  }
+    const [updatedArticleRows] = await this._Article.update(articleData, {
+      where: {id},
+    });
 
-  delete(articleId) {
-    const currentArticleDataIndex = this._articles.findIndex((article) => article.id === articleId);
-    if (currentArticleDataIndex >= 0) {
-      const [deletedArticle] = this._articles.splice(currentArticleDataIndex, 1);
-      return deletedArticle;
+    if (categories.length) {
+      const article = await this.find(id);
+      await article.setCategories(categories);
     }
 
-    return null;
+    return !!updatedArticleRows;
   }
 
-  find(id) {
-    return this._articles.find((article) => article.id === id);
+  async delete(id) {
+    const deletedRows = await this._Article.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
   }
 
-  findAll() {
-    return this._articles;
+  async find(id, {withComments} = {}) {
+    const include = [Aliase.CATEGORIES];
+
+    if (withComments) {
+      include.push(Aliase.COMMENTS);
+    }
+    return await this._Article.findByPk(id, {include});
+  }
+
+  async findAll({withComments}) {
+    const include = [Aliase.CATEGORIES];
+
+    if (withComments) {
+      include.push(Aliase.COMMENTS);
+    }
+    const articles = await this._Article.findAll({
+      include,
+    });
+
+    return articles.map((article) => article.get());
   }
 }
 

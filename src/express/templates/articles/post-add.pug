@@ -33,8 +33,8 @@ block content
                 .new-publication__category-wrapper
                   each category, index in categories
                     .new-publication__checkbox(class=`new-publication__checkbox--${index}`)
-                      input(id=index type="checkbox" name="category[]" value=category)
-                      label(for=index) #{category}
+                      input(id=index type="checkbox" name="categories[]" value=category.id)
+                      label(for=index) #{category.name}
                   a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text

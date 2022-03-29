@@ -24,9 +24,21 @@ const shuffle = (someArray) => {
 const getRandomArrElement = (arr) => arr[getRandomInt(0, arr.length - 1)];
 const getRandomArrElements = (arr, end = getRandomInt(1, arr.length - 1)) => shuffle(arr).slice(0, end);
 
+const getText = (values, maxLength) => {
+  return values.reduce((acc, value) => {
+    const concatValues = `${acc} ${value}`;
+    if (concatValues.length <= maxLength) {
+      return concatValues;
+    }
+
+    return acc;
+  }, ``);
+};
+
 module.exports = {
   generateId,
   getRandomInt,
   getRandomArrElement,
   getRandomArrElements,
+  getText
 };
