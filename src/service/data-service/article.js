@@ -44,7 +44,7 @@ class ArticleService {
     return await this._Article.findByPk(id, {include});
   }
 
-  async findAll({withComments}) {
+  async findAll({withComments} = {}) {
     const include = [Aliase.CATEGORIES];
 
     if (withComments) {

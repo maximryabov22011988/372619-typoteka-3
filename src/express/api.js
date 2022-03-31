@@ -25,7 +25,7 @@ class API {
   }
 
   async getAllComments() {
-    const articles = await this._load(`/articles`);
+    const articles = await this._load(`/articles`, {params: {withComments: true}});
     return articles.reduce((result, article) => result.concat(article.comments), []);
   }
 

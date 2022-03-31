@@ -19,7 +19,7 @@ const getArticlesWithCorrectImageFormat = (articles, postfix = `@1x`, ext = `jpg
 
 mainRouter.get(`/`, async (req, res) => {
   const [articles, categories] = await Promise.all([
-    api.getArticles(),
+    api.getArticles({withComments: true}),
     api.getCategories({withCount: true})
   ]);
   const mappedArticles = getArticlesWithCorrectImageFormat(articles);
