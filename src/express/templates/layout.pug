@@ -13,6 +13,42 @@ html(lang='ru')
   body
     mixin date(dateValue)
       | #{new Date(dateValue).toLocaleDateString(_, {hour: 'numeric', minute: 'numeric'})}
+
+    mixin pagination(page, totalPages, width, prefix)
+      -
+        // вычислим начальную и конечную страницу диапазона без учёта ограничений
+        let start = page - width;
+        let end = page + width;
+        // передвинем диапазон вправо, если он начинается с номера меньше единицы
+        if(start < 1){
+          end += 1 - start;
+          start = 1;
+        }
+        // передвинем диапазон влево, если он заканчивается номером больше количества страниц
+        if(end > totalPages){
+          start -= end - totalPages;
+          end = totalPages;
+        }
+        // если мы оказались в этой ветке, значит, всего страниц слишком мало. делаем начало диапазона 1
+        if(start < 1){
+          start = 1;
+        }
+        let i = start - 1
+
+      ul.preview__pagination.pagination
+        if start > 1
+          li
+            a.pagination__button.button.button--backwards(href=`${prefix}page=${page - 1}` class={'button--disabled': i === 1} aria-label='Страница назад') Назад
+        while i++ < end
+          li.pagination__item(class={'pagination__item--active': i === page})
+            if (i === page)
+              a= i
+            else
+              a(href=`${prefix}page=${i}`)= i
+        if end < totalPages
+          li
+            a.pagination__button.button.button--forward(href=`${prefix}page=${page + 1}` class={'button--disabled': i === totalPages} aria-label='Страница вперед') Вперёд
+
     .wrapper
       include partials/header.pug
       block content

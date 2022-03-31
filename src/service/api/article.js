@@ -11,9 +11,16 @@ const articleAPI = (app, articleService, commentService) => {
   app.use(`/articles`, route);
 
   route.get(`/`, async (req, res) => {
-    const {withComments} = req.query;
-    const articles = await articleService.findAll({withComments});
-    res.status(HttpCode.OK).json(articles);
+    const {offset, limit, withComments} = req.query;
+
+    let result;
+    if (offset || limit) {
+      result = await articleService.findPage({offset, limit, withComments});
+    } else {
+      result = await articleService.findAll({withComments});
+    }
+
+    res.status(HttpCode.OK).json(result);
   });
 
   route.get(`/:articleId`, articleExists(articleService), async (req, res) => {

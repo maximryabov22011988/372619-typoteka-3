@@ -3,6 +3,8 @@
 const {Router} = require(`express`);
 const api = require(`../api`).getAPI();
 
+const ARTICLES_PER_PAGE = 8;
+
 const mainRouter = new Router();
 
 const IMAGE_FORMATS = [`.jpg`, `.jpeg`, `.png`, `.webp`];
@@ -18,12 +20,25 @@ const getArticlesWithCorrectImageFormat = (articles, postfix = `@1x`, ext = `jpg
 };
 
 mainRouter.get(`/`, async (req, res) => {
-  const [articles, categories] = await Promise.all([
-    api.getArticles({withComments: true}),
+  let {page = 1} = req.query;
+  page = Number(page);
+
+  const [{count, articles}, categories] = await Promise.all([
+    api.getArticles({
+      withComments: true,
+      offset: (page - 1) * ARTICLES_PER_PAGE,
+      limit: ARTICLES_PER_PAGE
+    }),
     api.getCategories({withCount: true})
   ]);
   const mappedArticles = getArticlesWithCorrectImageFormat(articles);
-  res.render(`main/index`, {articles: mappedArticles, categories});
+  const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+  console.log(
+      `%c DEBUG articles`,
+      `padding: 0.3rem 0.45rem 0.25rem 0.25rem; background: crimson; font: 1em/1 Arial; color: white;`,
+      articles,
+  );
+  res.render(`main/index`, {articles: mappedArticles, page, totalPages, categories});
 });
 
 mainRouter.get(`/login`, (req, res) => res.render(`main/login`));
