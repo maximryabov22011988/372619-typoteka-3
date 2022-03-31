@@ -6,7 +6,7 @@ const {
   HttpCode,
   ExitCode
 } = require(`../../constants`);
-const routes = require(`../api`);
+const getApi = require(`../api`);
 const sequelize = require(`../lib/sequelize`);
 const {getLogger} = require(`../lib/logger`);
 
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(API_PREFIX, routes);
+app.use(API_PREFIX, getApi());
 
 app.use((req, res) => {
   res.status(HttpCode.BAD_REQUEST).send(notFoundMessageText);
