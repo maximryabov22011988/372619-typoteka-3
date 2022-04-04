@@ -3,7 +3,7 @@
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 const {logger} = require(`../lib/logger`);
-const sequelize = require(`../lib/sequelize`);
+const getSequelize = require(`../lib/sequelize`);
 const initDB = require(`../lib/init-db`);
 const {ExitCode} = require(`../../constants`);
 const {
@@ -46,7 +46,6 @@ const getRandomSubarray = (items) => {
   return result;
 };
 
-
 const generateArticles = ({count, titles, pictures, sentences, categories, comments}) => (
   Array.from({length: count}, () => {
     const title = getRandomArrElement(titles);
@@ -81,12 +80,13 @@ module.exports = {
       process.exit(ExitCode.ERROR);
     }
 
+    const sequelize = getSequelize();
     try {
       logger.info(`Trying to connect to database...`);
       await sequelize.authenticate();
     } catch (err) {
       logger.error(`An error occurred: ${err.message}`);
-      process.exit(1);
+      process.exit(ExitCode.ERROR);
     }
     logger.info(`Connection to database established`);
 

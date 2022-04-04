@@ -6,8 +6,8 @@ const {
   HttpCode,
   ExitCode
 } = require(`../../constants`);
+const getSequelize = require(`../lib/sequelize`);
 const getApi = require(`../api`);
-const sequelize = require(`../lib/sequelize`);
 const {getLogger} = require(`../lib/logger`);
 
 const DEFAULT_PORT = 3000;
@@ -17,29 +17,31 @@ const app = express();
 app.use(express.json());
 const logger = getLogger({name: `api`});
 
-app.use((req, res, next) => {
-  logger.debug(`Request on route ${req.url}`);
-  res.on(`finish`, () => {
-    logger.info(`Response status code ${res.statusCode}`);
-  });
-  next();
-});
-
-app.use(API_PREFIX, getApi());
-
-app.use((req, res) => {
-  res.status(HttpCode.BAD_REQUEST).send(notFoundMessageText);
-  logger.error(`Route not found: ${req.url}`);
-});
-app.use((err, _req, res, _next) => {
-  const {message} = err;
-  res.status(HttpCode.INTERNAL_SERVER_ERROR).send(message);
-  logger.error(`An error occurred on processing request: ${message}`);
-});
-
 module.exports = {
   name: `--server`,
   async run(args) {
+    const sequelize = getSequelize();
+
+    app.use((req, res, next) => {
+      logger.debug(`Request on route ${req.url}`);
+      res.on(`finish`, () => {
+        logger.info(`Response status code ${res.statusCode}`);
+      });
+      next();
+    });
+
+    app.use(API_PREFIX, getApi(sequelize));
+
+    app.use((req, res) => {
+      res.status(HttpCode.BAD_REQUEST).send(notFoundMessageText);
+      logger.error(`Route not found: ${req.url}`);
+    });
+    app.use((err, _req, res, _next) => {
+      const {message} = err;
+      res.status(HttpCode.INTERNAL_SERVER_ERROR).send(message);
+      logger.error(`An error occurred on processing request: ${message}`);
+    });
+
     try {
       logger.info(`Trying to connect database...`);
       await sequelize.authenticate();

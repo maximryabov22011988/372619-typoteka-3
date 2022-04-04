@@ -10,10 +10,9 @@ const {
   ArticleService,
   CommentService
 } = require(`../data-service`);
-const sequelize = require(`../lib/sequelize`);
 const defineModels = require(`../models`);
 
-const getApi = () => {
+const getApi = (sequelize) => {
   const app = new Router();
 
   defineModels(sequelize);
