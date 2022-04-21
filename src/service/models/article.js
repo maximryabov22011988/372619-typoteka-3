@@ -15,10 +15,14 @@ const define = (sequelize) => Article.init({
     allowNull: false,
   },
   fulltext: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING(1000),
     allowNull: false,
   },
   picture: DataTypes.STRING,
+  createdDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
 }, {
   sequelize,
   tableName: `articles`

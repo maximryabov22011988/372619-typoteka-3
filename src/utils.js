@@ -35,10 +35,24 @@ const getText = (values, maxLength) => {
   }, ``);
 };
 
+const ensureArray = (value) => Array.isArray(value) ? value : [value];
+
+const prepareErrors = (errors) => {
+  return errors && errors.response && errors.response.data && errors.response.data.split(`\n`);
+};
+
+const validate = ({schema, data}) => schema.validate(data, {abortEarly: false});
+
+const getErrorListStr = (error) => error.details.map((err) => err.message).join(`\n`);
+
 module.exports = {
   generateId,
   getRandomInt,
   getRandomArrElement,
   getRandomArrElements,
-  getText
+  getText,
+  ensureArray,
+  prepareErrors,
+  validate,
+  getErrorListStr
 };

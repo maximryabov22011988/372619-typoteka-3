@@ -13,6 +13,7 @@ const PUBLIC_DIR = `public`;
 const UPLOAD_DIR = `upload`;
 
 const app = express();
+app.use(express.urlencoded({extended: false}));
 
 app.use(`/my`, myRoutes);
 app.use(`/articles`, articlesRoutes);

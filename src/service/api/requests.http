@@ -4,7 +4,7 @@ GET http://localhost:3000/api/categories
 
 
 ### Поиск публикаций
-GET http://localhost:3000/api/search?query=Рок
+GET http://localhost:3000/api/search?query=а
 
 ### Запрашивает список публикаций
 GET http://localhost:3000/api/articles
@@ -17,25 +17,29 @@ POST http://localhost:3000/api/articles
 Content-Type: application/json
 
 {
-  "title": "Новая публикация",
-  "announce": "Какой то анонс",
-  "fulltext": "Вы можете достичь всего. Стоит только немного постараться и запастись книгами.",
-  "categories": [2]
+  "title": "Новая публикация. Новая публикация. Новая публикация",
+  "announce": "Какой то анонс. Какой то анонс. Какой то анонс. Какой то анонс",
+  "fulltext": "Вы можете достичь всего. Стоит только немного постараться и запастись книгами. ",
+  "categories": [1],
+  "createdDate": "2022-01-17",
+  "picture": "test.jpg"
 }
 
 ### Обновление публикации
-PUT http://localhost:3000/api/articles/1
+PUT http://localhost:3000/api/articles/2
 Content-Type: application/json
 
 {
   "title": "(обновленный 2) Что такое золотое сечение",
   "announce": "Первая большая ёлка была установлена только в 1938 году. Достичь успеха помогут ежедневные повторения. Этот смартфон — настоящая находка.",
   "fulltext": "Вы можете достичь всего. Стоит только немного постараться и запастись книгами.",
-  "categories": [1]
+  "createdDate": "2022-01-17",
+  "categories": [1],
+  "picture": "test.jpg"
 }
 
 ### Удаление публикации с :id
-DELETE http://localhost:3000/api/articles/3
+DELETE http://localhost:3000/api/articles/1
 
 
 
@@ -47,7 +51,7 @@ POST http://localhost:3000/api/articles/1/comments
 Content-Type: application/json
 
 {
-  "text": "Новый тестовый коммент"
+  "text": "Новый тестовый коммент. Новый тестовый коммент. Новый тестовый коммент"
 }
 
 ### Удаление комментария

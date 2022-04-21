@@ -17,7 +17,7 @@ const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
 const MAX_ANNOUNCE_LENGTH = 250;
 const MAX_FULLTEXT_LENGTH = 1000;
-const MAX_COMMENT_LENGTH = 1000;
+const MAX_COMMENT_LENGTH = 100;
 const MAX_COMMENTS = 4;
 const MAX_COUNT_ERROR_MESSAGE = `Не больше ${MAX_COUNT} публикаций`;
 
@@ -46,6 +46,12 @@ const getRandomSubarray = (items) => {
   return result;
 };
 
+const getRandomDate = () => {
+  const startPoint = new Date().getTime();
+  const endPoint = startPoint - new Date(90 * (24 * 3600 * 1000)).getTime();
+  return new Date(endPoint + Math.random() * (startPoint - endPoint));
+};
+
 const generateArticles = ({count, titles, pictures, sentences, categories, comments}) => (
   Array.from({length: count}, () => {
     const title = getRandomArrElement(titles);
@@ -56,6 +62,7 @@ const generateArticles = ({count, titles, pictures, sentences, categories, comme
       fulltext: getText(getRandomArrElements(sentences), MAX_FULLTEXT_LENGTH),
       categories: getRandomSubarray(categories),
       comments: getComments(comments),
+      createdDate: getRandomDate(),
     });
   })
 );

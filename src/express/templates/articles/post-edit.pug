@@ -5,7 +5,7 @@ block content
     section
       .popup.popup--new-publication.popup--anti
         .new-publication
-          form(action='#' method='POST')
+          form(action=`/articles/edit/${id}` method='POST' enctype='multipart/form-data')
             .new-publication__header
               h1 Редактирование публикации
               .new-publication__date-form
@@ -13,7 +13,7 @@ block content
                 .new-publication__date-form-division
                   .new-publication__date-block
                     label(for='new-publication-date' aria-label='Календарь')
-                    input#new-publication-date(type='text' name='date' value=article.createdAt)
+                    input#new-publication-date(type='text' name='date' value=article.createdDate)
               button.new-publication__button.button.button--colored(type='submit') Опубликовать
             a.popup__button.button.button--popup-close(aria-label='Закрыть окно')
               | Закрыть
@@ -24,6 +24,7 @@ block content
                   label
                     input(type='text' name='title' placeholder='Заголовок' value=article.title required='')
                 .form__field.form__field--post-image
+                  input(type="hidden" name="old-image" value=article.picture)
                   label
                     input#image-name-field(type='text' name='photo' value=article.picture placeholder='Фотография' readonly='')
                   .form__image-loader.form__image-loader--publication
@@ -44,3 +45,4 @@ block content
                 .form__field.form__field--publication-text
                   label
                     textarea(rows='10' name='full-text' placeholder='Полный текст публикации') #{article.fullText}
+            +insertErrorMessage(validationMessages)

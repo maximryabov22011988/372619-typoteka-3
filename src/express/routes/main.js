@@ -33,11 +33,6 @@ mainRouter.get(`/`, async (req, res) => {
   ]);
   const mappedArticles = getArticlesWithCorrectImageFormat(articles);
   const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-  console.log(
-      `%c DEBUG articles`,
-      `padding: 0.3rem 0.45rem 0.25rem 0.25rem; background: crimson; font: 1em/1 Arial; color: white;`,
-      articles,
-  );
   res.render(`main/index`, {articles: mappedArticles, page, totalPages, categories});
 });
 

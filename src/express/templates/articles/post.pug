@@ -9,8 +9,8 @@ block content
         .post__wrapper
           .post__head
             a.post__backwards.button.button--backwards(href='#') Назад
-            time.post__date(datetime=article.createdAt)
-              +date(article.createdAt)
+            time.post__date(datetime=article.createdDate)
+              +date(article.createdDate)
             h2.post__title.title.title--main #{article.title}
             ul.post__themes.themes
               each category in categories
@@ -26,10 +26,10 @@ block content
             p #{article.fullText}
       .post__wrapper.post__wrapper--comments
         section.post__comments.comments
-          h2.comments__title.title.title--middle Комментарии
-          if article.comments
-            ul.comments__list
-              each comment in article.comments
+          h2.comments__title.title.title--middle #{`Комментарии${article.comments && article.comments.length ? '' : ' отсутствуют'}`}
+          if article.comments.length
+            each comment in article.comments
+              ul.comments__list
                 li.comments__comment
                   .comments__avatar.avatar
                     img(src='/img/avatar-1.png' alt='аватар пользователя')
@@ -40,9 +40,10 @@ block content
                         +date(comment.createdAt)
                     p.comments__message #{comment.text}
           .comments__footer.comments__footer--user
-            form(action='#' method='POST')
+            form(action=`/articles/${id}/comments` enctype='application/x-www-form-urlencoded' method='POST')
               .comments__avatar.avatar
                 img(src='/img/avatar-2.png' alt='аватар пользователя')
               label
-                textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
+                textarea(rows='1' name='comment' placeholder='Присоединиться к обсуждению')
               button.comments__button.button.button--colored(type='submit') Опубликовать
+              +insertErrorMessage(validationMessages)

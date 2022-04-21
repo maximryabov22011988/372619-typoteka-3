@@ -10,7 +10,7 @@ class ArticleService {
   async create(articleData) {
     const article = await this._Article.create(articleData);
     await article.addCategories(articleData.categories);
-    return article.get();
+    return article && article.get();
   }
 
   async update(id, newArticleData) {
@@ -41,6 +41,7 @@ class ArticleService {
     if (withComments) {
       include.push(Aliase.COMMENTS);
     }
+
     return await this._Article.findByPk(id, {include});
   }
 

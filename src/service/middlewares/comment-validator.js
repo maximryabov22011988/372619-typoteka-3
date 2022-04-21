@@ -1,19 +1,30 @@
 'use strict';
 
+const Joi = require(`joi`);
 const {HttpCode} = require(`../../constants`);
+const {getErrorListStr} = require(`../../utils`);
 
-const REQUIRED_FIELDS = [`text`];
+const TextLength = {
+  Min: 30,
+};
 
-const commentValidator = (req, res, next) => {
-  const comment = req.body;
-  const fields = Object.keys(comment);
-  const keysExists = REQUIRED_FIELDS.every((requiredField) => fields.includes(requiredField));
+const ErrorCommentMessage = {
+  TEXT: `Комментарий содержит меньше ${TextLength.Min} символов`
+};
 
-  if (!keysExists) {
-    return res.status(HttpCode.BAD_REQUEST).send(`Bad request`);
+const schema = Joi.object({
+  text: Joi.string().min(TextLength.Min).required().messages({
+    'string.min': ErrorCommentMessage.TEXT
+  }),
+});
+
+const validator = (req, res, next) => {
+  const {error} = schema.validate(req.body, {abortEarly: false});
+  if (error) {
+    return res.status(HttpCode.BAD_REQUEST).send(getErrorListStr(error));
   }
 
   return next();
 };
 
-module.exports = commentValidator;
+module.exports = validator;

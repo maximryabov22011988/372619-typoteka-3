@@ -1,6 +1,7 @@
 'use strict';
 
 const axios = require(`axios`);
+const {HttpMethod} = require(`../constants`);
 
 class API {
   constructor(baseURL, timeout) {
@@ -38,7 +39,24 @@ class API {
   }
 
   createArticle(data) {
-    return this._load(`/articles`, {method: `POST`, data});
+    return this._load(`/articles`, {
+      method: HttpMethod.POST,
+      data
+    });
+  }
+
+  editArticle(id, data) {
+    return this._load(`/articles/${id}`, {
+      method: HttpMethod.PUT,
+      data
+    });
+  }
+
+  createComment(id, data) {
+    return this._load(`/articles/${id}/comments`, {
+      method: HttpMethod.POST,
+      data
+    });
   }
 }
 

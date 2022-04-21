@@ -24,6 +24,13 @@ const HttpCode = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
+const HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 const Env = {
   DEVELOPMENT: `development`,
   PRODUCTION: `production`
@@ -36,5 +43,6 @@ module.exports = {
   API_PREFIX,
   ExitCode,
   HttpCode,
+  HttpMethod,
   Env
 };
