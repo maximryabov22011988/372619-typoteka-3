@@ -56,3 +56,18 @@ Content-Type: application/json
 
 ### Удаление комментария
 DELETE http://localhost:3000/api/articles/1/comments/25
+
+
+
+### Добавление пользователя
+POST http://localhost:3000/api/user
+Content-Type: application/json
+
+{
+  "firstName": "Сидор",
+  "lastName": "Сидоров",
+  "email": "sidorov@example.com",
+  "password": "sidorov",
+  "passwordRepeated": "sidorov",
+  "avatar": "sidorov.jpg"
+}

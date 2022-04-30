@@ -3,6 +3,7 @@
 class CommentService {
   constructor(sequelize) {
     this._Comment = sequelize.models.Comment;
+    this._User = sequelize.models.User;
   }
 
   async create(articleId, commentData) {

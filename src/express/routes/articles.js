@@ -1,10 +1,10 @@
 'use strict';
 
 const {Router} = require(`express`);
-const multer = require(`multer`);
-const path = require(`path`);
 const api = require(`../api`).getAPI();
-const {generateId, ensureArray, prepareErrors} = require(`../../utils`);
+const upload = require(`../middlewares/upload`);
+const {ARTICLES_PER_PAGE} = require(`./constants`);
+const {ensureArray, prepareErrors} = require(`../../utils`);
 
 const articlesRouter = new Router();
 
@@ -18,18 +18,6 @@ const getArticleData = async ({id, withComments = false, withCount = false}) => 
 articlesRouter.get(`/add`, async (req, res) => {
   const categories = await getCategories();
   res.render(`articles/post-add`, {categories});
-});
-
-const UPLOAD_DIR = `../upload/img/`;
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: path.resolve(__dirname, UPLOAD_DIR),
-    filename: (req, file, cb) => {
-      const uniqueName = generateId(10);
-      const extension = file.originalname.split(`.`).pop();
-      cb(null, `${uniqueName}.${extension}`);
-    }
-  })
 });
 
 articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
@@ -104,6 +92,17 @@ articlesRouter.post(`/:id/comments`, async (req, res) => {
   }
 });
 
-articlesRouter.get(`/category/:id`, (req, res) => res.render(`articles/posts-by-category`));
+articlesRouter.get(`/category/:id`, async (req, res) => {
+  const {id} = req.params;
+  let {page = 1} = req.query;
+
+  page = +page;
+  const limit = ARTICLES_PER_PAGE;
+  const offset = (page - 1) * ARTICLES_PER_PAGE;
+
+  const posts = await api.getArticles({limit, offset});
+  const categories = await api.getCategories({withCount: true});
+  res.render(`articles/posts-by-category`, {id, posts, categories});
+});
 
 module.exports = articlesRouter;

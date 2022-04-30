@@ -5,6 +5,7 @@ const chalk = require(`chalk`);
 const {logger} = require(`../lib/logger`);
 const getSequelize = require(`../lib/sequelize`);
 const initDB = require(`../lib/init-db`);
+const passwordUtils = require(`../lib/password`);
 const {ExitCode} = require(`../../constants`);
 const {
   getRandomInt,
@@ -27,9 +28,13 @@ const CATEGORIES_FILE_PATH = `./data/categories.txt`;
 const COMMENTS_FILE_PATH = `./data/comments.txt`;
 const PICTURES_FILE_PATH = `./data/pictures.txt`;
 
-const getComments = (comments) =>
+
+const getRandomUserEmail = (users) => users[getRandomInt(0, users.length - 1)].email;
+
+const getComments = ({comments, users}) =>
   Array.from({length: getRandomInt(1, MAX_COMMENTS)}, () => ({
     text: getText(getRandomArrElements(comments), MAX_COMMENT_LENGTH),
+    user: getRandomUserEmail(users),
   }));
 
 const getRandomSubarray = (items) => {
@@ -52,7 +57,7 @@ const getRandomDate = () => {
   return new Date(endPoint + Math.random() * (startPoint - endPoint));
 };
 
-const generateArticles = ({count, titles, pictures, sentences, categories, comments}) => (
+const generateArticles = ({count, titles, pictures, sentences, categories, comments, users}) => (
   Array.from({length: count}, () => {
     const title = getRandomArrElement(titles);
     return ({
@@ -61,8 +66,9 @@ const generateArticles = ({count, titles, pictures, sentences, categories, comme
       announce: getText(getRandomArrElements(sentences, 5), MAX_ANNOUNCE_LENGTH),
       fulltext: getText(getRandomArrElements(sentences), MAX_FULLTEXT_LENGTH),
       categories: getRandomSubarray(categories),
-      comments: getComments(comments),
+      comments: getComments({comments, users}),
       createdDate: getRandomDate(),
+      user: getRandomUserEmail(users),
     });
   })
 );
@@ -105,16 +111,34 @@ module.exports = {
       await readContent(CATEGORIES_FILE_PATH),
       await readContent(COMMENTS_FILE_PATH)
     ]);
+    const userList = [
+      {
+        firstName: `Иван`,
+        lastName: `Иванов`,
+        email: `ivanov@example.com`,
+        passwordHash: passwordUtils.hashSync(`ivanov`),
+        avatar: `avatar01.jpg`
+      },
+      {
+        firstName: `Пётр`,
+        lastName: `Петров`,
+        email: `petrov@example.com`,
+        passwordHash: passwordUtils.hashSync(`petrov`),
+        avatar: `avatar02.jpg`
+      }
+    ];
+
 
     const articles = generateArticles({
-      count: articlesCount,
       titles,
       pictures,
       sentences,
       categories,
-      comments
+      comments,
+      count: articlesCount,
+      users: userList
     });
 
-    return initDB(sequelize, {categories, articles});
+    return initDB(sequelize, {categories, articles, users: userList});
   }
 };

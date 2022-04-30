@@ -19,10 +19,11 @@ html(lang='ru')
         padding: 10px;
       }
   body
-    mixin insertErrorMessage(messages)
+    mixin insertErrorMessages(messages)
       if messages
-        each message of messages
-          p.comments__error= message
+        each message in messages
+          ul.form__errors
+            li.form__error= message
 
     mixin date(dateValue)
       | #{new Date(dateValue).toLocaleDateString({hour: 'numeric', minute: 'numeric'})}

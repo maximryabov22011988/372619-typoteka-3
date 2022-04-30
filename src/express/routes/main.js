@@ -2,8 +2,9 @@
 
 const {Router} = require(`express`);
 const api = require(`../api`).getAPI();
-
-const ARTICLES_PER_PAGE = 8;
+const upload = require(`../middlewares/upload`);
+const {ARTICLES_PER_PAGE} = require(`./constants`);
+const {prepareErrors} = require(`../../utils`);
 
 const mainRouter = new Router();
 
@@ -36,8 +37,34 @@ mainRouter.get(`/`, async (req, res) => {
   res.render(`main/index`, {articles: mappedArticles, page, totalPages, categories});
 });
 
-mainRouter.get(`/login`, (req, res) => res.render(`main/login`));
-mainRouter.get(`/register`, (req, res) => res.render(`main/sign-up`));
+
+mainRouter.get(`/register`, async (req, res) => {
+  res.render(`main/sign-up`);
+});
+
+mainRouter.post(`/register`, upload.single(`upload`), async (req, res) => {
+  const {body: formValues, file} = req;
+  const userData = {
+    avatar: file ? file.filename : ``,
+    firstName: formValues.firstName,
+    lastName: formValues.lastName,
+    email: formValues.email,
+    password: formValues.password,
+    passwordRepeated: formValues[`repeat-password`]
+  };
+
+  try {
+    await api.createUser(userData);
+    res.redirect(`/login`);
+  } catch (errors) {
+    const validationMessages = prepareErrors(errors);
+    res.render(`main/sign-up`, {validationMessages});
+  }
+});
+
+mainRouter.get(`/login`, async (req, res) => {
+  res.render(`main/login`);
+});
 
 mainRouter.get(`/search`, async (req, res) => {
   const {query} = req.query;

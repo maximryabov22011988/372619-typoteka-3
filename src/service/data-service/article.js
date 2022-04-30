@@ -1,16 +1,19 @@
 'use strict';
 
 const Aliase = require(`../models/aliase`);
+const getUserModelWithoutExcludedParams = require(`./get-user-model-without-excluded-params`);
 
 class ArticleService {
   constructor(sequelize) {
     this._Article = sequelize.models.Article;
+    this._Comment = sequelize.models.Comment;
+    this._User = sequelize.models.User;
   }
 
   async create(articleData) {
     const article = await this._Article.create(articleData);
     await article.addCategories(articleData.categories);
-    return article && article.get();
+    return article.get();
   }
 
   async update(id, newArticleData) {
@@ -36,20 +39,38 @@ class ArticleService {
   }
 
   async find(id, {withComments} = {}) {
-    const include = [Aliase.CATEGORIES];
+    const include = [
+      Aliase.CATEGORIES,
+      getUserModelWithoutExcludedParams(this._User)
+    ];
 
     if (withComments) {
-      include.push(Aliase.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        include: [
+          getUserModelWithoutExcludedParams(this._User)
+        ]
+      });
     }
 
     return await this._Article.findByPk(id, {include});
   }
 
   async findAll({withComments} = {}) {
-    const include = [Aliase.CATEGORIES];
+    const include = [
+      Aliase.CATEGORIES,
+      getUserModelWithoutExcludedParams(this._User)
+    ];
 
     if (withComments) {
-      include.push(Aliase.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        include: [
+          getUserModelWithoutExcludedParams(this._User)
+        ]
+      });
     }
     const articles = await this._Article.findAll({
       include,
@@ -59,10 +80,19 @@ class ArticleService {
   }
 
   async findPage({limit, offset, withComments} = {}) {
-    const include = [Aliase.CATEGORIES];
+    const include = [
+      Aliase.CATEGORIES,
+      getUserModelWithoutExcludedParams(this._User)
+    ];
 
     if (withComments) {
-      include.push(Aliase.COMMENTS);
+      include.push({
+        model: this._Comment,
+        as: Aliase.COMMENTS,
+        include: [
+          getUserModelWithoutExcludedParams(this._User)
+        ]
+      });
     }
 
     const {count, rows: articles} = await this._Article.findAndCountAll({
