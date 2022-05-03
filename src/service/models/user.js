@@ -24,7 +24,6 @@ const define = (sequelize) => User.init({
   },
   avatar: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
 }, {
   sequelize,

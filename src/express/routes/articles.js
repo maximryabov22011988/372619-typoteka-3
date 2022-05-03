@@ -1,12 +1,15 @@
 'use strict';
 
 const {Router} = require(`express`);
+const csrf = require(`csurf`);
+const auth = require(`../middlewares/auth`);
 const api = require(`../api`).getAPI();
 const upload = require(`../middlewares/upload`);
 const {ARTICLES_PER_PAGE} = require(`./constants`);
 const {ensureArray, prepareErrors} = require(`../../utils`);
 
 const articlesRouter = new Router();
+const csrfProtection = csrf();
 
 const getCategories = () => api.getCategories();
 
@@ -15,12 +18,14 @@ const getArticleData = async ({id, withComments = false, withCount = false}) => 
   return {article, categories};
 };
 
-articlesRouter.get(`/add`, async (req, res) => {
+articlesRouter.get(`/add`, auth, csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const categories = await getCategories();
-  res.render(`articles/post-add`, {categories});
+  res.render(`articles/post-add`, {categories, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(`/add`, auth, csrfProtection, upload.single(`upload`), async (req, res) => {
+  const {user} = req.session;
   const {body, file} = req;
 
   const newArticle = {
@@ -38,20 +43,21 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
     const categories = await getCategories();
-    res.render(`articles/post-add`, {categories, validationMessages});
+    res.render(`articles/post-add`, {categories, validationMessages, user, csrfToken: req.csrfToken()});
   }
 });
 
-articlesRouter.get(`/edit/:id`, async (req, res) => {
+articlesRouter.get(`/edit/:id`, auth, csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const articleData = await getArticleData({id});
-  res.render(`articles/post-edit`, {id, ...articleData});
+  res.render(`articles/post-edit`, {id, ...articleData, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.post(`/edit/:id`, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(`/edit/:id`, auth, csrfProtection, upload.single(`upload`), async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {body, file} = req;
-
 
   const updatedArticle = {
     title: body.title,
@@ -68,17 +74,19 @@ articlesRouter.post(`/edit/:id`, upload.single(`upload`), async (req, res) => {
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
     const articleData = await getArticleData({id});
-    res.render(`articles/post-edit`, {id, ...articleData, validationMessages});
+    res.render(`articles/post-edit`, {id, ...articleData, validationMessages, user});
   }
 });
 
-articlesRouter.get(`/:id`, async (req, res) => {
+articlesRouter.get(`/:id`, csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const articleData = await getArticleData({id, withComments: true, withCount: true});
-  res.render(`articles/post`, {id, ...articleData});
+  res.render(`articles/post`, {id, ...articleData, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.post(`/:id/comments`, async (req, res) => {
+articlesRouter.post(`/:id/comments`, auth, csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {comment} = req.body;
 
@@ -88,11 +96,12 @@ articlesRouter.post(`/:id/comments`, async (req, res) => {
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
     const articleData = await getArticleData({id, withComments: true, withCount: true});
-    res.render(`articles/post`, {...articleData, validationMessages});
+    res.render(`articles/post`, {...articleData, validationMessages, user});
   }
 });
 
 articlesRouter.get(`/category/:id`, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   let {page = 1} = req.query;
 
@@ -102,7 +111,7 @@ articlesRouter.get(`/category/:id`, async (req, res) => {
 
   const posts = await api.getArticles({limit, offset});
   const categories = await api.getCategories({withCount: true});
-  res.render(`articles/posts-by-category`, {id, posts, categories});
+  res.render(`articles/posts-by-category`, {id, posts, categories, user});
 });
 
 module.exports = articlesRouter;

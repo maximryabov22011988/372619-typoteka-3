@@ -156,6 +156,28 @@ const createAPI = async () => {
   return app;
 };
 
+describe(`API creates an article if data is valid`, () => {
+  const newArticle = {
+    title: `Что такое золотое сечение. Что такое золотое сечение`,
+    announce: `Первая большая ёлка была установлена только в 1938 году. Достичь успеха помогут ежедневные повторения. `,
+    fulltext: `Первая большая ёлка была установлена только в 1938 году. Достичь успеха помогут ежедневные повторения. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле?`,
+    categories: [3],
+    createdDate: `2021-02-11`,
+    userId: 1
+  };
+
+  let app;
+  let response;
+  beforeAll(async () => {
+    app = await createAPI();
+    response = await request(app).post(`/articles`).send(newArticle);
+  });
+
+  test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED), 50000);
+  test(`Articles count is changed`, () => request(app).get(`/articles`).expect((res) => expect(res.body.length).toBe(6), 50000)
+  );
+});
+
 describe(`API returns a list of all articles`, () => {
   let response;
 
@@ -187,28 +209,6 @@ describe(`API returns code 404 if non-existent article id`, () => {
   });
 
   test(`Status code 404`, () => expect(response.statusCode).toBe(HttpCode.NOT_FOUND));
-});
-
-describe(`API creates an article if data is valid`, () => {
-  const newArticle = {
-    title: `Что такое золотое сечение. Что такое золотое сечение`,
-    announce: `Первая большая ёлка была установлена только в 1938 году. Достичь успеха помогут ежедневные повторения. `,
-    fulltext: `Первая большая ёлка была установлена только в 1938 году. Достичь успеха помогут ежедневные повторения. Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете. Освоить вёрстку несложно. Возьмите книгу новую книгу и закрепите все упражнения на практике. Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле?`,
-    categories: [3],
-    createdDate: `2021-02-11`,
-    userId: 1
-  };
-
-  let app;
-  let response;
-  beforeAll(async () => {
-    app = await createAPI();
-    response = await request(app).post(`/articles`).send(newArticle);
-  });
-
-  test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
-  test(`Articles count is changed`, () => request(app).get(`/articles`).expect((res) => expect(res.body.length).toBe(6))
-  );
 });
 
 describe(`API refuses to create an article if data is invalid`, () => {

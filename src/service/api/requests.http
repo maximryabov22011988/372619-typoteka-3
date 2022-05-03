@@ -71,3 +71,12 @@ Content-Type: application/json
   "passwordRepeated": "sidorov",
   "avatar": "sidorov.jpg"
 }
+
+### Аутентификация пользователя
+POST http://localhost:3000/api/user/auth
+Content-Type: application/json
+
+{
+  "email": "ivanov@example.com",
+  "password": "ivanov"
+}

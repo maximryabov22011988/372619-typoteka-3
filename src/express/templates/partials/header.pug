@@ -2,10 +2,23 @@ header.header
   a.header__logo.logo(href='/')
     img.logo__image(src='/img/icons/logo-image-only.svg' alt='логотип Тайпотеки')
     span.logo__name Типотека
-  nav.header__nav
+
+  if !user
+    nav.header__nav
     ul.header__nav-list
       li.header__list-item
         a.header__registration(href='/register') Регистрация
       li.header__list-item
         a.header__enter(href='/login') Вход с паролем
+
+  if user
+    nav.header__nav
+      ul.header__nav-list
+        li.header__list-item.header__list-item--avatar
+          img(src=`/img/${user.avatar}` alt='аватар пользователя')
+        li.header__list-item
+          p #{user.firstName} #{user.lastName}
+        li.header__list-item
+          a.header__exit(href='/logout') Выйти
+
   a.header__search.button.button--search(href='/search' aria-label='поиск по сайту')
