@@ -3,6 +3,7 @@
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
 const userValidator = require(`../middlewares/user-validator`);
+const asyncHandler = require(`../middlewares/async-handler`);
 const passwordUtils = require(`../lib/password`);
 
 const ErrorAuthMessage = {
@@ -14,7 +15,7 @@ module.exports = (app, userService) => {
   const route = new Router();
   app.use(`/user`, route);
 
-  route.post(`/`, userValidator(userService), async (req, res) => {
+  route.post(`/`, userValidator(userService), asyncHandler(async (req, res) => {
     const userData = req.body;
 
     userData.passwordHash = await passwordUtils.hash(userData.password);
@@ -22,9 +23,9 @@ module.exports = (app, userService) => {
     delete newUser.passwordHash;
 
     res.status(HttpCode.CREATED).json(newUser);
-  });
+  }));
 
-  route.post(`/auth`, async (req, res) => {
+  route.post(`/auth`, asyncHandler(async (req, res) => {
     const {email, password} = req.body;
 
     const user = await userService.findByEmail(email);
@@ -40,7 +41,5 @@ module.exports = (app, userService) => {
     } else {
       res.status(HttpCode.UNAUTHORIZED).send(ErrorAuthMessage.PASSWORD);
     }
-  });
-
-
+  }));
 };

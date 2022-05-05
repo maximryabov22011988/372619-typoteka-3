@@ -61,7 +61,7 @@ const schema = Joi.object({
   })
 });
 
-const validator = async (req, res, next) => {
+const validator = (req, res, next) => {
   const {error} = schema.validate(req.body, {abortEarly: false});
   if (error) {
     return res.status(HttpCode.BAD_REQUEST).send(getErrorListStr(error));

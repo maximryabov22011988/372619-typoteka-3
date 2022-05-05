@@ -1,8 +1,9 @@
 'use strict';
 
 const {HttpCode} = require(`../../constants`);
+const asyncHandler = require(`./async-handler`);
 
-const articleExists = (articleService) => async (req, res, next) => {
+const articleExists = (articleService) => asyncHandler(async (req, res, next) => {
   const {articleId} = req.params;
   const article = await articleService.find(articleId);
 
@@ -12,6 +13,6 @@ const articleExists = (articleService) => async (req, res, next) => {
 
   res.locals.article = article;
   return next();
-};
+});
 
 module.exports = articleExists;

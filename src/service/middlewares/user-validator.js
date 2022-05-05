@@ -2,6 +2,7 @@
 
 const Joi = require(`joi`);
 const {HttpCode} = require(`../../constants`);
+const asyncHandler = require(`./async-handler`);
 const {getErrorListStr} = require(`../../utils`);
 
 const ErrorRegisterMessage = {
@@ -48,7 +49,7 @@ const schema = Joi.object({
   avatar: Joi.string().allow(null, ``)
 });
 
-const validator = (userService) => async (req, res, next) => {
+const validator = (userService) => asyncHandler(async (req, res, next) => {
   const userData = req.body;
 
   const {error} = schema.validate(userData, {abortEarly: false});
@@ -62,6 +63,6 @@ const validator = (userService) => async (req, res, next) => {
   }
 
   return next();
-};
+});
 
 module.exports = validator;
