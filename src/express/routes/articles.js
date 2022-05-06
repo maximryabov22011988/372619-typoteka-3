@@ -40,7 +40,7 @@ articlesRouter.get(Path.CreateArticle, auth, csrfProtection, async (req, res) =>
   res.render(PageTemplate.CreateArticle, {categories, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.post(Path.CreateArticle, auth, csrfProtection, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(Path.CreateArticle, auth, upload.single(`upload`), csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {body, file} = req;
 
@@ -70,7 +70,7 @@ articlesRouter.get(Path.EditArticle, auth, csrfProtection, async (req, res) => {
   res.render(PageTemplate.EditArticle, {id, ...articleData, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.post(Path.EditArticle, auth, csrfProtection, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(Path.EditArticle, auth, upload.single(`upload`), csrfProtection, async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
   const {body, file} = req;
