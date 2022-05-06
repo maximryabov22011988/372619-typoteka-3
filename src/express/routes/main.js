@@ -6,6 +6,23 @@ const upload = require(`../middlewares/upload`);
 const {ARTICLES_PER_PAGE} = require(`./constants`);
 const {prepareErrors} = require(`../../utils`);
 
+const Path = {
+  Main: `/`,
+  Search: `/search`,
+  Categories: `/categories`,
+  SignUp: `/register`,
+  Login: `/login`,
+  Logout: `/logout`
+};
+
+const PageTemplate = {
+  Main: `main/index`,
+  Search: `main/search`,
+  Categories: `main/all-categories`,
+  SignUp: `main/sign-up`,
+  Login: `main/login`
+};
+
 const mainRouter = new Router();
 
 const IMAGE_FORMATS = [`.jpg`, `.jpeg`, `.png`, `.webp`];
@@ -20,7 +37,7 @@ const getArticlesWithCorrectImageFormat = (articles, postfix = `@1x`, ext = `jpg
   });
 };
 
-mainRouter.get(`/`, async (req, res) => {
+mainRouter.get(Path.Main, async (req, res) => {
   const {user} = req.session;
   let {page = 1} = req.query;
   page = Number(page);
@@ -35,12 +52,12 @@ mainRouter.get(`/`, async (req, res) => {
   ]);
   const mappedArticles = getArticlesWithCorrectImageFormat(articles);
   const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-  res.render(`main/index`, {articles: mappedArticles, page, totalPages, categories, user});
+  res.render(PageTemplate.Main, {articles: mappedArticles, page, totalPages, categories, user});
 });
 
-mainRouter.get(`/register`, async (req, res) => {
+mainRouter.get(Path.SignUp, async (req, res) => {
   const {user} = req.session;
-  res.render(`main/sign-up`, {user, userData: {
+  res.render(PageTemplate.SignUp, {user, userData: {
     avatar: ``,
     firstName: ``,
     lastName: ``,
@@ -48,7 +65,7 @@ mainRouter.get(`/register`, async (req, res) => {
   }});
 });
 
-mainRouter.post(`/register`, upload.single(`upload`), async (req, res) => {
+mainRouter.post(Path.SignUp, upload.single(`upload`), async (req, res) => {
   const {user} = req.session;
   const {body: formValues, file} = req;
   const userData = {
@@ -62,37 +79,37 @@ mainRouter.post(`/register`, upload.single(`upload`), async (req, res) => {
 
   try {
     await api.createUser(userData);
-    res.redirect(`/login`);
+    res.redirect(Path.Login);
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
-    res.render(`main/sign-up`, {validationMessages, userData, user});
+    res.render(PageTemplate.SignUp, {validationMessages, userData, user});
   }
 });
 
-mainRouter.get(`/login`, (req, res) => {
+mainRouter.get(Path.Login, (req, res) => {
   const {user} = req.session;
-  res.render(`main/login`, {user, userData: {email: ``}});
+  res.render(PageTemplate.Login, {user, userData: {email: ``}});
 });
 
-mainRouter.post(`/login`, async (req, res) => {
+mainRouter.post(Path.Login, async (req, res) => {
   const {email, password} = req.body;
   try {
     const user = await api.auth(email, password);
     req.session.user = user;
-    res.redirect(`/`);
+    res.redirect(Path.Main);
   } catch (errors) {
     const validationMessages = errors.response.data.split(`\n`);
     const {user} = req.session;
-    res.render(`main/login`, {user, validationMessages, userData: {email}});
+    res.render(PageTemplate.Login, {user, validationMessages, userData: {email}});
   }
 });
 
-mainRouter.get(`/logout`, async (req, res) => {
+mainRouter.get(Path.Logout, async (req, res) => {
   delete req.session.user;
   res.redirect(`/`);
 });
 
-mainRouter.get(`/search`, async (req, res) => {
+mainRouter.get(Path.Search, async (req, res) => {
   const {user} = req.session;
   const {query} = req.query;
   try {
@@ -108,16 +125,16 @@ mainRouter.get(`/search`, async (req, res) => {
         ]
       };
     });
-    res.render(`main/search`, {results: resultsWithHighlightTitle, query, user});
+    res.render(PageTemplate.Search, {results: resultsWithHighlightTitle, query, user});
   } catch (err) {
-    res.render(`main/search`, {results: [], query, user});
+    res.render(PageTemplate.Search, {results: [], query, user});
   }
 });
 
-mainRouter.get(`/categories`, async (req, res) => {
+mainRouter.get(Path.Categories, async (req, res) => {
   const {user} = req.session;
   const categories = await api.getCategories();
-  res.render(`main/all-categories`, {categories, user});
+  res.render(PageTemplate.Categories, {categories, user});
 });
 
 module.exports = mainRouter;
