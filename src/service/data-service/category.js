@@ -36,6 +36,40 @@ class CategoryService {
 
     return await this._Category.findAll({raw: true});
   }
+
+  async countByCategory(id) {
+    const result = await this._ArticleCategory.findAll({
+      where: {CategoryId: id}
+    });
+    const count = result.length;
+    return +count;
+  }
+
+  async findByName(name) {
+    return await this._Category.findOne({where: {name}});
+  }
+
+  async create(name) {
+    const category = await this._Category.create({
+      name
+    });
+    return category.get();
+  }
+
+  async update(id, name) {
+    const newCategoryData = {name};
+    return await this._Category.update(newCategoryData, {
+      where: {id}
+    });
+  }
+
+  async delete(id) {
+    const deletedRows = await this._Category.destroy({
+      where: {id}
+    });
+
+    return !!deletedRows;
+  }
 }
 
 module.exports = CategoryService;

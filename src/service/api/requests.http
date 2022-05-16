@@ -1,8 +1,3 @@
-### Запрашивает список категорий
-GET http://localhost:3000/api/categories
-
-
-
 ### Поиск публикаций
 GET http://localhost:3000/api/search?query=а
 
@@ -55,7 +50,7 @@ Content-Type: application/json
 }
 
 ### Удаление комментария
-DELETE http://localhost:3000/api/articles/1/comments/25
+DELETE http://localhost:3000/api/articles/1/comments/10
 
 
 
@@ -80,3 +75,27 @@ Content-Type: application/json
   "email": "ivanov@example.com",
   "password": "ivanov"
 }
+
+
+
+### Запрашивает список категорий
+GET http://localhost:3000/api/categories
+
+### Добавление категории
+POST http://localhost:3000/api/categories/add
+Content-Type: application/json
+
+{
+  "name": "Автомобили"
+}
+
+### Обновление категории
+PUT http://localhost:3000/api/categories/13/update
+Content-Type: application/json
+
+{
+  "name": "Автомобили 1"
+}
+
+### Удаление категории
+DELETE http://localhost:3000/api/categories/13/delete

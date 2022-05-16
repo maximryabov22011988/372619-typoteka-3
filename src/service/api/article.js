@@ -25,6 +25,17 @@ const articleAPI = (app, articleService, commentService) => {
     res.status(HttpCode.OK).json(result);
   }));
 
+  route.get(`/popular`, asyncHandler(async (req, res) => {
+    const result = await articleService.findPopular();
+
+    return res.status(HttpCode.OK).json(result);
+  }));
+
+  route.get(`/comments`, asyncHandler(async (req, res) => {
+    const comments = await commentService.findLatest();
+    return res.status(HttpCode.OK).json(comments);
+  }));
+
   route.get(`/:articleId`, [routeParamsValidator, articleExists(articleService)], asyncHandler(async (req, res) => {
     const {articleId} = req.params;
     const article = await articleService.find(articleId, {withComments: true});
@@ -66,7 +77,7 @@ const articleAPI = (app, articleService, commentService) => {
 
   route.delete(`/:articleId/comments/:commentId`, [routeParamsValidator, articleExists(articleService)], asyncHandler(async (req, res) => {
     const {commentId} = req.params;
-    const deletedComment = await commentService.delete(commentId);
+    const deletedComment = await commentService.delete(Number(commentId));
     if (!deletedComment) {
       return res.status(HttpCode.NOT_FOUND).send(`Not found comment with id "${commentId}"`);
     }

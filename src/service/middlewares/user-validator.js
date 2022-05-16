@@ -18,7 +18,7 @@ const ErrorRegisterMessage = {
   PASSWORD_REPEATED: `Пароли не совпадают`,
 };
 
-const NAME_PATTERN = /[^0-9$&+,:;=?@#|'<>.^*()%!]+$/;
+const NAME_PATTERN = /^[A-Za-zА-Яа-я\s]+$/;
 
 const schema = Joi.object({
   firstName: Joi.string().pattern(NAME_PATTERN).required().messages({

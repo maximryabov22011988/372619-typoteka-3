@@ -11,8 +11,10 @@ block content
               img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
               b.publication__list-name Александр Петров
               time.publication__item-time(datetime=comment.createdAt)
-                +date(comment.createdAt)
+                +dateWithTime(comment.createdAt)
             a.publication__item-text(href='#') #{comment.text}
             p.publication__text-strong #{comment.articleTitle}
-            button.publication__button.button.button--close-item(type='button')
-              span.visually-hidden Закрыть строку списка
+            form(action=(`/articles/${comment.articleId}/comments/${comment.id}`) method='POST' enctype='application/x-www-form-urlencoded')
+              input(type="hidden" name="_csrf" value=csrfToken)
+              button.publication__button.button.button--close-item(type='submit')
+                span.visually-hidden Закрыть строку списка

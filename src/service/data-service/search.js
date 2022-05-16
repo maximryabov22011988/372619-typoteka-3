@@ -22,7 +22,7 @@ class SearchService {
         getUserModelWithoutExcludedParams(this._User)
       ],
       order: [
-        [`createdAt`, `DESC`]
+        [`createdDate`, `DESC`]
       ]
     });
 

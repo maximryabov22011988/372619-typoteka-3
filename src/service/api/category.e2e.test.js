@@ -188,3 +188,59 @@ describe(`API returns category list`, () => {
   ]));
 });
 
+
+describe(`API creates a new category if data is valid`, () => {
+  const newCategory = {
+    name: `correct category name`
+  };
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app).post(`/categories/add`).send(newCategory);
+  });
+
+  test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.OK));
+  test(`Categories count is changed`, () => request(app).get(`/categories`).expect((res) => expect(res.body.length).toBe(13))
+  );
+});
+
+
+describe(`API correctly update category name`, () => {
+  const newCategory = {
+    name: `Обновленная категория`
+  };
+
+  let response;
+  beforeAll(async () => {
+    response = await request(app).put(`/categories/1/update`).send(newCategory);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+  test(`Category name changed`, () => request(app).get(`/categories`).expect((res) => expect(res.body[0].name).toBe(`Обновленная категория`))
+  );
+});
+
+describe(`API correctly delete a category`, () => {
+  let response;
+  beforeAll(async () => {
+    response = await request(app).delete(`/categories/13/delete`);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+  test(`Categories count is changed`, () => request(app).get(`/categories`).expect((res) => expect(res.body.length).toBe(12))
+  );
+});
+
+describe(`API refuses to delete a non-empty category`, () => {
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app).delete(`/categories/3/delete`);
+  });
+
+  test(`Status code 400`, () => expect(response.statusCode).toBe(HttpCode.BAD_REQUEST));
+  test(`Categories count is not changed`, () => request(app).get(`/categories`).expect((res) => expect(res.body.length).toBe(12))
+  );
+});
+

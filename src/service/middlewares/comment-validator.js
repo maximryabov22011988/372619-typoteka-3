@@ -5,7 +5,7 @@ const {HttpCode} = require(`../../constants`);
 const {getErrorListStr} = require(`../../utils`);
 
 const TextLength = {
-  Min: 30,
+  Min: 20,
 };
 
 const ErrorCommentMessage = {

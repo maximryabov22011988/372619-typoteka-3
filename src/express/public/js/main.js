@@ -54,15 +54,6 @@ if (popup) {
   }
 }
 
-// меняет высоту поля textarea в блоке comments в зависимости от количества введенных в него строк.
-
-// let comments = document.querySelector('.post__comments');
-// let publication = document.querySelector('.new-publication');
-// let textarea = null;
-
-// if (comments || publication) {
-//   textarea = document.querySelectorAll('textarea');
-// }
 const map = (typeof Map === 'function') ? new Map() : (function () {
   const keys = [];
   const values = [];
@@ -321,9 +312,3 @@ if (typeof window === 'undefined' || typeof window.getComputedStyle !== 'functio
     return el;
   };
 }
-
-// if (textarea) {
-//   textarea.forEach(element => {
-//     autosize(element);
-//   });
-// }

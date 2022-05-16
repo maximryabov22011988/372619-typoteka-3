@@ -25,8 +25,20 @@ html(lang='ru')
           ul.form__errors
             li.form__error= message
 
+    mixin insertInputErrorMessages(errors, messages)
+      if errors
+        each message in errors
+          if message.includes(messages)
+            p.form__error-message= message
+
     mixin date(dateValue)
       | #{new Date(dateValue).toLocaleDateString({hour: 'numeric', minute: 'numeric'})}
+
+    mixin dateWithTime(dateValue)
+      | #{new Date(dateValue).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+
+    mixin sliceText(text)
+      | #{text.length <= 100 ? text : text.slice(0, 100) + '...'}
 
     mixin pagination(page, totalPages, width, prefix)
       -

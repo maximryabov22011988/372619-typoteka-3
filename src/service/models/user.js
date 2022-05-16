@@ -25,6 +25,10 @@ const define = (sequelize) => User.init({
   avatar: {
     type: DataTypes.STRING,
   },
+  isAdmin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
 }, {
   sequelize,
   tableName: `users`

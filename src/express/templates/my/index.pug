@@ -10,5 +10,6 @@ block content
             time.notes__item-time(datetime=article.createdDate)
               +date(article.createdDate)
             a.notes__item-text(href=(`/articles/${article.id}`)) #{article.title}
-            button.notes__button.button.button--close-item(type='button')
-              span.visually-hidden Закрыть строку списка
+            form(action=(`/articles/${article.id}`) method='POST' enctype='application/x-www-form-urlencoded')
+              button.notes__button.button.button--close-item(type='submit')
+                span.visually-hidden Закрыть строку списка

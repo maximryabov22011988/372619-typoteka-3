@@ -117,14 +117,16 @@ module.exports = {
         lastName: `Иванов`,
         email: `ivanov@example.com`,
         passwordHash: passwordUtils.hashSync(`ivanov`),
-        avatar: `avatar01.jpg`
+        avatar: `avatar01.jpg`,
+        isAdmin: true,
       },
       {
         firstName: `Пётр`,
         lastName: `Петров`,
         email: `petrov@example.com`,
         passwordHash: passwordUtils.hashSync(`petrov`),
-        avatar: `avatar02.jpg`
+        avatar: `avatar02.jpg`,
+        isAdmin: false,
       }
     ];
 

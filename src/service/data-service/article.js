@@ -3,6 +3,8 @@
 const Aliase = require(`../models/aliase`);
 const getUserModelWithoutExcludedParams = require(`./get-user-model-without-excluded-params`);
 
+const MAX_DISPLAYED_POPULAR_ARTICLES = 4;
+
 class ArticleService {
   constructor(sequelize) {
     this._Article = sequelize.models.Article;
@@ -43,6 +45,7 @@ class ArticleService {
       Aliase.CATEGORIES,
       getUserModelWithoutExcludedParams(this._User)
     ];
+    const order = [];
 
     if (withComments) {
       include.push({
@@ -52,9 +55,13 @@ class ArticleService {
           getUserModelWithoutExcludedParams(this._User)
         ]
       });
+      order.push([Aliase.COMMENTS, `createdAt`, `DESC`]);
     }
 
-    return await this._Article.findByPk(id, {include});
+    return await this._Article.findByPk(id, {
+      include,
+      order
+    });
   }
 
   async findAll({withComments} = {}) {
@@ -72,8 +79,12 @@ class ArticleService {
         ]
       });
     }
+
     const articles = await this._Article.findAll({
       include,
+      order: [
+        [`createdAt`, `DESC`]
+      ]
     });
 
     return articles.map((article) => article.get());
@@ -104,7 +115,18 @@ class ArticleService {
       ],
       distinct: true
     });
+
     return {count, articles};
+  }
+
+  async findPopular() {
+    const articles = await this._Article.findAll({
+      attributes: [`announce`, `id`],
+      include: Aliase.COMMENTS
+    });
+
+    const popularArticles = articles.map((item) => item.get()).filter((el) => el.comments.length);
+    return popularArticles.sort((a, b) => b.comments.length - a.comments.length).slice(0, MAX_DISPLAYED_POPULAR_ARTICLES);
   }
 }
 

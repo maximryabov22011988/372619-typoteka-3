@@ -15,7 +15,6 @@ const AnnounceLength = {
 };
 
 const FulltextLength = {
-  Min: 30,
   Max: 1000
 };
 
@@ -23,11 +22,10 @@ const ErrorArticleMessage = {
   TITLE_MIN: `Заголовок содержит меньше ${TitleLength.Min} символов`,
   TITLE_MAX: `Заголовок не может содержать более ${TitleLength.Max} символов`,
   TITLE_REQUIRED: `"Заголовок" - обязателен для заполнения`,
-  ANNOUNCE_MIN: `Описание содержит меньше ${AnnounceLength.Min} символов`,
-  ANNOUNCE_MAX: `Заголовок не может содержать более ${AnnounceLength.Max} символов`,
-  ANNOUNCE_REQUIRED: `"Анонс" - обязателен для заполнения`,
-  FULLTEXT_MIN: `Полный текст не может содержать менее ${FulltextLength.Min} символов`,
-  FULLTEXT_MAX: `Полный текст не может содержать более ${FulltextLength.Max} символов`,
+  ANNOUNCE_MIN: `Анонс публикации содержит меньше ${AnnounceLength.Min} символов`,
+  ANNOUNCE_MAX: `Анонс публикации не может содержать более ${AnnounceLength.Max} символов`,
+  ANNOUNCE_REQUIRED: `"Анонс публикации" - обязателен для заполнения`,
+  FULLTEXT_MAX: `Полный текст публикации не может содержать более ${FulltextLength.Max} символов`,
   CATEGORIES: `Не выбрана ни одна категория объявления`,
   USER_ID: `Некорректный идентификатор пользователя`
 };
@@ -45,17 +43,16 @@ const schema = Joi.object({
     'any.required': ErrorArticleMessage.ANNOUNCE_REQUIRED,
     'string.empty': ErrorArticleMessage.ANNOUNCE_REQUIRED,
   }),
-  fulltext: Joi.string().min(FulltextLength.Min).max(FulltextLength.Max).allow(null, ``).messages({
-    'string.min': ErrorArticleMessage.FULLTEXT_MIN,
+  fulltext: Joi.string().max(FulltextLength.Max).allow(null, ``).messages({
     'string.max': ErrorArticleMessage.FULLTEXT_MAX
   }),
   categories: Joi.array().items(
-      Joi.number().integer().positive().messages({
-        'number.base': ErrorArticleMessage.CATEGORIES
-      })
-  ).min(1).required(),
+      Joi.number().integer().positive()
+  ).min(1).required().messages({
+    'array.min': ErrorArticleMessage.CATEGORIES
+  }),
   picture: Joi.string().allow(null, ``),
-  createdDate: Joi.date().format(`YYYY-MM-DD`).required(),
+  createdDate: Joi.date().required(),
   userId: Joi.number().integer().positive().required().messages({
     'number.base': ErrorArticleMessage.USER_ID
   })
