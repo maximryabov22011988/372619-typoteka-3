@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const asyncHandler = require(`../../middlewares/async-handler`);
 const auth = require(`../middlewares/auth`);
 const isAdmin = require(`../middlewares/is-admin`);
 const upload = require(`../middlewares/upload`);
@@ -49,7 +50,7 @@ articlesRouter.get(Path.CreateArticle, isAdmin, async (req, res) => {
   }
 });
 
-articlesRouter.post(Path.CreateArticle, [isAdmin, upload.single(`upload`)], async (req, res) => {
+articlesRouter.post(Path.CreateArticle, [isAdmin, upload.single(`upload`)], asyncHandler(async (req, res) => {
   const {user} = req.session;
   const {body, file} = req;
 
@@ -71,7 +72,7 @@ articlesRouter.post(Path.CreateArticle, [isAdmin, upload.single(`upload`)], asyn
     const categories = await getCategories();
     res.render(PageTemplate.CreateArticle, {validationMessages, categories, user});
   }
-});
+}));
 
 articlesRouter.get(Path.EditArticle, isAdmin, async (req, res) => {
   const {user} = req.session;
@@ -85,7 +86,7 @@ articlesRouter.get(Path.EditArticle, isAdmin, async (req, res) => {
   }
 });
 
-articlesRouter.post(Path.EditArticle, [isAdmin, upload.single(`upload`)], async (req, res) => {
+articlesRouter.post(Path.EditArticle, [isAdmin, upload.single(`upload`)], asyncHandler(async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
   const {body, file} = req;
@@ -108,7 +109,7 @@ articlesRouter.post(Path.EditArticle, [isAdmin, upload.single(`upload`)], async 
     const articleData = await getArticleData({id});
     res.render(PageTemplate.EditArticle, {id, ...articleData, user, validationMessages});
   }
-});
+}));
 
 articlesRouter.post(Path.DeleteArticle, isAdmin, async (req, res) => {
   const {id} = req.params;
@@ -133,7 +134,7 @@ articlesRouter.get(Path.ViewArticle, async (req, res) => {
   }
 });
 
-articlesRouter.post(Path.ArticleComments, auth, async (req, res) => {
+articlesRouter.post(Path.ArticleComments, auth, asyncHandler(async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
   const {comment} = req.body;
@@ -146,7 +147,7 @@ articlesRouter.post(Path.ArticleComments, auth, async (req, res) => {
     const articleData = await getArticleData({id, withComments: true, withCount: true});
     res.render(PageTemplate.ViewArticle, {validationMessages, id, ...articleData, user});
   }
-});
+}));
 
 articlesRouter.post(Path.DeleteComment, isAdmin, async (req, res) => {
   const {id, commentId} = req.params;

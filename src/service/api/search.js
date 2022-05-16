@@ -2,7 +2,7 @@
 
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
-const asyncHandler = require(`../middlewares/async-handler`);
+const asyncHandler = require(`../../middlewares/async-handler`);
 
 const searchAPI = (app, service) => {
   const route = new Router();

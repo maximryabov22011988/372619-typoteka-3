@@ -2,7 +2,7 @@
 
 const Joi = require(`joi`);
 const {HttpCode} = require(`../../constants`);
-const asyncHandler = require(`./async-handler`);
+const asyncHandler = require(`../../middlewares/async-handler`);
 const {getErrorListStr} = require(`../../utils`);
 
 const ErrorRegisterMessage = {

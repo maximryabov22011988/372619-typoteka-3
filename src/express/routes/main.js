@@ -3,6 +3,7 @@
 const {Router} = require(`express`);
 const csrf = require(`csurf`);
 const api = require(`../api`).getAPI();
+const asyncHandler = require(`../../middlewares/async-handler`);
 const upload = require(`../middlewares/upload`);
 const isAdmin = require(`../middlewares/is-admin`);
 const {ARTICLES_PER_PAGE} = require(`./constants`);
@@ -167,7 +168,7 @@ mainRouter.get(Path.Search, async (req, res) => {
   }
 });
 
-mainRouter.post(Path.CreateCategory, async (req, res) => {
+mainRouter.post(Path.CreateCategory, asyncHandler(async (req, res) => {
   const {user} = req.session;
   const {category} = req.body;
 
@@ -179,9 +180,9 @@ mainRouter.post(Path.CreateCategory, async (req, res) => {
     const categories = await api.getCategories();
     res.render(PageTemplate.Categories, {isNewCategory: true, newCategory: category, categories, user, validationMessages});
   }
-});
+}));
 
-mainRouter.post(Path.UpdateCategory, isAdmin, async (req, res) => {
+mainRouter.post(Path.UpdateCategory, isAdmin, asyncHandler(async (req, res) => {
   const {id} = req.params;
   const {user} = req.session;
   const {category} = req.body;
@@ -194,9 +195,9 @@ mainRouter.post(Path.UpdateCategory, isAdmin, async (req, res) => {
     const categories = await api.getCategories();
     res.render(PageTemplate.Categories, {isNewCategory: false, categories, user, validationMessages});
   }
-});
+}));
 
-mainRouter.get(Path.DeleteCategory, isAdmin, async (req, res) => {
+mainRouter.get(Path.DeleteCategory, isAdmin, asyncHandler(async (req, res) => {
   const {user} = req.session;
   const {id} = req.params;
 
@@ -208,6 +209,6 @@ mainRouter.get(Path.DeleteCategory, isAdmin, async (req, res) => {
     const categories = await api.getCategories();
     res.render(PageTemplate.Categories, {categories, user, validationMessages});
   }
-});
+}));
 
 module.exports = mainRouter;

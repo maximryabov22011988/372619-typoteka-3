@@ -1,7 +1,7 @@
 'use strict';
 
 const {HttpCode} = require(`../../constants`);
-const asyncHandler = require(`./async-handler`);
+const asyncHandler = require(`../../middlewares/async-handler`);
 
 const articleExists = (articleService) => asyncHandler(async (req, res, next) => {
   const {articleId} = req.params;

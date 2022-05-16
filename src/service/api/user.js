@@ -2,8 +2,8 @@
 
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
+const asyncHandler = require(`../../middlewares/async-handler`);
 const userValidator = require(`../middlewares/user-validator`);
-const asyncHandler = require(`../middlewares/async-handler`);
 const passwordUtils = require(`../lib/password`);
 
 const ErrorAuthMessage = {

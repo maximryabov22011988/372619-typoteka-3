@@ -2,7 +2,7 @@
 
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
-const asyncHandler = require(`../middlewares/async-handler`);
+const asyncHandler = require(`../../middlewares/async-handler`);
 const isCategoryExist = require(`../middlewares/category-exists`);
 const categoryValidator = require(`../middlewares/category-validator`);
 const checkCategoryCount = require(`../middlewares/check-category-count`);

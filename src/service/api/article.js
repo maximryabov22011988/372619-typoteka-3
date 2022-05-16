@@ -2,11 +2,11 @@
 
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
+const asyncHandler = require(`../../middlewares/async-handler`);
 const articleExists = require(`../middlewares/article-exists`);
 const articleValidator = require(`../middlewares/article-validator`);
 const commentValidator = require(`../middlewares/comment-validator`);
 const routeParamsValidator = require(`../middlewares/route-params-validator`);
-const asyncHandler = require(`../middlewares/async-handler`);
 
 const articleAPI = (app, articleService, commentService) => {
   const route = new Router();
