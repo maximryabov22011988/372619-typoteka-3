@@ -1,11 +1,13 @@
 'use strict';
 
 const express = require(`express`);
+const http = require(`http`);
 const {
   API_PREFIX,
   HttpCode,
   ExitCode
 } = require(`../../constants`);
+const socket = require(`../lib/socket`);
 const getSequelize = require(`../lib/sequelize`);
 const getApi = require(`../api`);
 const {getLogger} = require(`../lib/logger`);
@@ -13,9 +15,14 @@ const {getLogger} = require(`../lib/logger`);
 const DEFAULT_PORT = 3000;
 const notFoundMessageText = `Not found`;
 
-const app = express();
-app.use(express.json());
 const logger = getLogger({name: `api`});
+const app = express();
+const server = http.createServer(app);
+
+const io = socket(server);
+app.locals.socketio = io;
+
+app.use(express.json());
 
 module.exports = {
   name: `--server`,
@@ -54,7 +61,7 @@ module.exports = {
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
-    app.listen(port)
+    server.listen(port)
       .on(`listening`, () => {
         logger.info(`Waiting for connections on port ${port}`);
       })

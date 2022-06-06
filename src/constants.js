@@ -36,13 +36,22 @@ const Env = {
   PRODUCTION: `production`
 };
 
+const DEFAULT_FRONT_PORT = 8080;
+
+const SocketAction = {
+  CREATE_ARTICLE: `article:created`,
+  CREATE_COMMENT: `comment:created`
+};
+
 module.exports = {
   DEFAULT_COMMAND,
+  DEFAULT_FRONT_PORT,
   USER_ARGV_INDEX,
   MOCK_FILENAME,
   API_PREFIX,
   ExitCode,
   HttpCode,
   HttpMethod,
-  Env
+  Env,
+  SocketAction
 };

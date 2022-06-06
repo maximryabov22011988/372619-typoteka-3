@@ -1,7 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {HttpCode} = require(`../../constants`);
+const {HttpCode, SocketAction} = require(`../../constants`);
 const asyncHandler = require(`../../middlewares/async-handler`);
 const articleExists = require(`../middlewares/article-exists`);
 const articleValidator = require(`../middlewares/article-validator`);
@@ -44,6 +44,11 @@ const articleAPI = (app, articleService, commentService) => {
 
   route.post(`/`, articleValidator, asyncHandler(async (req, res) => {
     const newArticle = await articleService.create(req.body);
+
+    const io = req.app.locals.socketio;
+    const article = await articleService.find(newArticle.id, {withComments: true});
+    io.emit(SocketAction.CREATE_ARTICLE, article);
+
     res.status(HttpCode.CREATED).json(newArticle);
   }));
 

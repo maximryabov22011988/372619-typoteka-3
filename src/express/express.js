@@ -6,13 +6,12 @@ const getSequelize = require(`../service/lib/sequelize`);
 const SequelizeStore = require(`connect-session-sequelize`)(session.Store);
 const chalk = require(`chalk`);
 const path = require(`path`);
-const {HttpCode} = require(`../constants`);
+const {HttpCode, DEFAULT_FRONT_PORT} = require(`../constants`);
 const mainRoutes = require(`./routes/main`);
 const myRoutes = require(`./routes/my`);
 const articlesRoutes = require(`./routes/articles`);
 
-const DEFAULT_PORT = 8080;
-const port = process.env.PORT || DEFAULT_PORT;
+const port = process.env.PORT || DEFAULT_FRONT_PORT;
 
 const PUBLIC_DIR = `public`;
 const UPLOAD_DIR = `upload`;
